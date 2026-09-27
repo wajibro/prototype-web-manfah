@@ -153,7 +153,7 @@ export const calculateShippingCost = async (
     // ORIGIN: ganti dengan DISTRICT ID (kecamatan) asal toko
     // Contoh Kota Malang kecamatan Klojen = district id: 4726
     // ---------------------------------------------------------
-    const ORIGIN_DISTRICT_ID = '4726'; // ← GANTI sesuai lokasi tokomu
+    const ORIGIN_DISTRICT_ID = '3896'; // ← GANTI sesuai lokasi tokomu
 
     const costs = await getShippingCost({
       origin: ORIGIN_DISTRICT_ID,
