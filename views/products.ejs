@@ -1,0 +1,279 @@
+<%- include('partials/mainHeader', {
+    bgImage: "https://dkeswcdfflabksfaxdkk.supabase.co/storage/v1/object/public/bucket/assets/photo-1517420704952-d9f39e95b43e.avif"
+});%>
+
+<%
+  const isSearchMode = typeof query !== 'undefined' && query.q && String(query.q).trim() !== '';
+%>
+
+<main>
+  <!-- ================= HERO ================= -->
+  <section class="relative overflow-hidden h-[300px] lg:h-[300px] flex items-center justify-center">
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"></div>
+    <div class="absolute inset-0 bg-black/50"></div>
+
+    <div class="relative z-10 text-center text-white px-4">
+      <p class="text-xs lg:text-base font-medium tracking-wider uppercase text-white/90"
+         data-reveal data-reveal-delay="0">
+        <a href="/" class="text-white/50 hover:text-white/90">Home</a> / Product
+      </p>
+      <h1 class="mt-2 text-5xl lg:text-6xl font-bold leading-tight text-white"
+          data-reveal data-reveal-delay="120">
+        Product
+      </h1>
+    </div>
+  </section>
+
+  <!-- Wrapper full-width untuk background putih -->
+  <div class="bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+
+      <!-- ================= FILTER / SEARCH SECTION ================= -->
+      <div class="mb-12 flex justify-center" data-reveal data-reveal-delay="200">
+        <div id="filterBar" class="relative w-full max-w-4xl min-h-[68px] rounded-full shadow-lg border border-gray-200 bg-white">
+
+          <!-- ============ VIEW 1: FILTERS ============ -->
+          <form id="filtersView" action="" method="GET"
+            class="w-full h-full p-1.5 flex flex-col md:flex-row items-center gap-2 md:gap-0 transition-all duration-300 ease-out
+                   <%= isSearchMode ? 'opacity-0 -translate-y-3 pointer-events-none' : '' %>">
+
+            <!-- Bawa keyword search saat ganti dropdown -->
+            <% if (typeof query !== 'undefined' && query.q) { %>
+              <input type="hidden" name="q" value="<%= query.q %>">
+            <% } %>
+
+            <!-- Filter Kategori -->
+            <div class="flex-1 w-full px-4 flex flex-col justify-center">
+              <label for="kategori" class="text-[10px] font-bold text-gray-800 uppercase tracking-wider">Kategori</label>
+              <select name="kategori" id="kategori"
+                onchange="this.form.submit()"
+                class="text-sm text-gray-600 bg-transparent border-none outline-none focus:ring-0 cursor-pointer w-full py-0.5"
+              >
+                <option value="">Filter</option>
+                <% if (typeof categories !== 'undefined' && categories && categories.length) { %>
+                  <% categories.forEach(cat => { %>
+                    <option value="<%= cat.kategori %>"
+                      <%= (typeof query !== 'undefined' && String(query.kategori) === String(cat.kategori)) ? 'selected' : '' %>>
+                      <%= cat.kategori %>
+                    </option>
+                  <% }) %>
+                <% } %>
+              </select>
+            </div>
+
+            <!-- Divider -->
+            <div class="hidden md:block w-px h-10 bg-gray-300 mx-2"></div>
+
+            <!-- Urutkan Harga -->
+            <div class="flex-1 w-full px-4 flex flex-col justify-center">
+              <label for="sort" class="text-[10px] font-bold text-gray-800 uppercase tracking-wider">Urutkan</label>
+              <select name="sort" id="sort"
+                onchange="this.form.submit()"
+                class="text-sm text-gray-600 bg-transparent border-none outline-none focus:ring-0 cursor-pointer w-full py-0.5"
+              >
+                <option value="" <%= (typeof query !== 'undefined' && !query.sort) ? 'selected' : '' %>>
+                  Default
+                </option>
+                <option value="harga_asc"
+                  <%= (typeof query !== 'undefined' && String(query.sort) === 'harga_asc') ? 'selected' : '' %>>
+                  ↓ Harga 
+                </option>
+                <option value="harga_desc"
+                  <%= (typeof query !== 'undefined' && String(query.sort) === 'harga_desc') ? 'selected' : '' %>>
+                  ↑ Harga
+                </option>
+              </select>
+            </div>
+
+            <!-- Divider sebelum tombol search -->
+            <div class="hidden md:block w-px h-10 bg-gray-300 mx-2"></div>
+
+            <!-- Tombol buka Search -->
+            <div class="pr-2 w-full md:w-auto flex justify-end">
+              <button type="button" id="openSearchBtn"
+                class="bg-gray-100 hover:bg-gray-200 transition-colors rounded-full w-12 h-12 flex items-center justify-center text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </button>
+            </div>
+          </form>
+
+          <!-- ============ VIEW 2: SEARCH ============ -->
+          <form id="searchView" action="" method="GET"
+            class="absolute inset-0 p-1.5 flex items-center gap-1 transition-all duration-300 ease-out
+                   <%= isSearchMode ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none' %>">
+
+            <!-- Bawa filter aktif saat submit search -->
+            <% if (typeof query !== 'undefined' && query.kategori) { %>
+              <input type="hidden" name="kategori" value="<%= query.kategori %>">
+            <% } %>
+            <% if (typeof query !== 'undefined' && query.sort) { %>
+              <input type="hidden" name="sort" value="<%= query.sort %>">
+            <% } %>
+
+            <!-- Tombol kembali -->
+            <button type="button" id="closeSearchBtn"
+              class="shrink-0 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full w-12 h-12 flex items-center justify-center text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+              </svg>
+            </button>
+
+            <!-- Input pencarian -->
+            <input type="text" name="q" id="searchInput" autocomplete="off"
+              value="<%= (typeof query !== 'undefined' && query.q) ? query.q : '' %>"
+              placeholder="Cari nama produk atau kategori..."
+              class="flex-1 h-12 bg-transparent border-none outline-none focus:ring-0 text-gray-700 placeholder-gray-400 text-base px-3">
+          </form>
+        </div>
+      </div>
+      <!-- ================= END FILTER / SEARCH SECTION ================= -->
+
+      <!-- ================= PRODUCT GRID ================= -->
+      <% if (typeof products !== 'undefined' && products.length) { %>
+        <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <% products.forEach(function(p, i) { %>
+            <li class="group" data-reveal data-reveal-delay="<%= (i % 5) * 80 %>">
+              <a href="<%= p.link %>"
+                 class="block aspect-square overflow-hidden rounded-2xl bg-softer">
+                <img src="<%= p.image_url %>"
+                     alt="<%= p.nama %>"
+                     loading="lazy"
+                     class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              </a>
+
+              <h2 class="mt-3 text-sm lg:text-base font-semibold">
+                <a href="<%= p.link %>" class="hover:text-primary transition"><%= p.nama %></a>
+              </h2>
+
+              <span class="mt-1 block text-sm lg:text-base font-bold text-primary">
+                Rp <%= Number(p.harga).toLocaleString('id-ID') %>
+              </span>
+
+              <div class="mt-1 text-[10px] lg:text-xs text-body">
+                <a href="/products?kategori=<%= (p.kategori || 'uncategorized').toLowerCase() %>"
+                   class="hover:text-primary transition">
+                  <%= p.kategori ? p.kategori : "Uncategorized" %>
+                </a>
+              </div>
+
+              <form action="/cart/add" method="POST" class="mt-4">
+                <input type="hidden" name="id_product" value="<%= p.id_product %>">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit"
+                        class="block w-full rounded-lg bg-gray-100 py-2.5 text-center text-sm font-semibold text-ink hover:bg-gray-200 transition">
+                  Tambah ke keranjang
+                </button>
+              </form>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <div class="text-center py-20">
+          <p class="text-gray-500 text-lg">
+            <% if (isSearchMode) { %>
+              Tidak ada produk yang cocok dengan pencarian "<%= query.q %>".
+            <% } else if (query.kategori) { %>
+              Tidak ada produk dengan kategori tersebut.
+            <% } else { %>
+              Belum ada produk.
+            <% } %>
+          </p>
+          <% if (isSearchMode || query.kategori) { %>
+            <a href="/products"
+               class="mt-6 inline-block rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primarydark transition">
+              Reset Filter
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+
+    </div>
+  </div>
+</main>
+
+<!-- ================= SCRIPTS ================= -->
+
+<!-- 1) Toggle Search View + Auto focus + Close handling -->
+<script>
+  (function () {
+    var openBtn     = document.getElementById('openSearchBtn');
+    var closeBtn    = document.getElementById('closeSearchBtn');
+    var filtersView = document.getElementById('filtersView');
+    var searchView  = document.getElementById('searchView');
+    var searchInput = document.getElementById('searchInput');
+
+    if (!openBtn || !closeBtn || !filtersView || !searchView || !searchInput) return;
+
+    function openSearch() {
+      filtersView.classList.add('opacity-0', '-translate-y-3', 'pointer-events-none');
+      searchView.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+      searchView.classList.add('opacity-100', 'scale-100');
+
+      window.setTimeout(function () {
+        searchInput.focus();
+        var v = searchInput.value;
+        searchInput.setSelectionRange(v.length, v.length);
+      }, 150);
+    }
+
+    function closeSearch() {
+      searchView.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+      searchView.classList.remove('opacity-100', 'scale-100');
+      filtersView.classList.remove('opacity-0', '-translate-y-3', 'pointer-events-none');
+      searchInput.value = '';
+
+      var url = new URL(window.location.href);
+      if (url.searchParams.has('q')) {
+        url.searchParams.delete('q');
+        window.location.href = url.toString();
+      }
+    }
+
+    openBtn.addEventListener('click', openSearch);
+    closeBtn.addEventListener('click', closeSearch);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !searchView.classList.contains('opacity-0')) {
+        closeSearch();
+      }
+    });
+
+    if (!searchView.classList.contains('opacity-0')) {
+      searchInput.focus();
+      var v = searchInput.value;
+      searchInput.setSelectionRange(v.length, v.length);
+    }
+  })();
+</script>
+
+<!-- 2) Debounced auto-search -->
+<script>
+  (function () {
+    var form  = document.getElementById('searchView');
+    var input = document.getElementById('searchInput');
+    if (!form || !input) return;
+
+    var timer = null;
+    var DELAY = 500;
+
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        form.submit();
+      }, DELAY);
+    });
+
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        clearTimeout(timer);
+        form.submit();
+      }
+    });
+  })();
+</script>
+
+<%- include('partials/mainFooter') %>

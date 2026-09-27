@@ -1,0 +1,358 @@
+<%- include('partials/mainHeader', {
+  bgImage: "https://dkeswcdfflabksfaxdkk.supabase.co/storage/v1/object/public/bucket/assets/bg-hero.png"
+}) %>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="relative overflow-hidden">
+    <!-- Overlay gelap -->
+    <div class="absolute inset-0 bg-gray-700/60"></div>
+
+    <div class="relative max-w-site mx-auto px-4 lg:px-6 pt-32 pb-20 lg:pt-40 lg:pb-28">
+      <div class="max-w-2xl">
+        <p class="text-white/85 text-base lg:text-lg" data-reveal data-reveal-delay="0">
+          Halo… Selamat datang di
+        </p>
+        <h1 class="mt-2 text-4xl lg:text-6xl font-bold leading-tight text-white" data-reveal="left" data-reveal-delay="120">
+          Manfahbot Industrial Automation
+        </h1>
+        <br><br>
+
+        <div class="mt-8 flex flex-wrap gap-3" data-reveal data-reveal-delay="240">
+          <a href="/about"
+             class="inline-flex items-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-ink hover:bg-white/90 transition">
+            About Us
+          </a>
+          <a href="https://youtu.be/MMrg0dTI__A?si=Wah6BOYqe9SCDum9"
+             class="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-transparent px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition">
+            <svg class="w-4 h-4" viewBox="0 0 512 512" fill="currentColor"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z"/></svg>
+            Watch Video
+          </a>
+        </div>
+        <br><br><br>
+      </div>
+    </div>
+  </section>
+
+  <div class="bg-white">
+    <!-- ================= SERVICE CARDS ================= -->
+    <section class="max-w-site mx-auto px-4 lg:px-6 py-12 lg:py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        <!-- Kartu Besar Kiri -->
+        <div class="lg:col-span-1 lg:row-span-2"
+            data-reveal="left" data-reveal-delay="0">
+          <a href="https://www.universal-robots.com/"
+            class="h-full group rounded-3xl bg-[#B0B0B0] p-8 flex flex-col justify-between overflow-hidden relative min-h-[400px] hover:bg-primary transition-colors duration-300">
+            <div class="relative z-10">
+              <h5 class="text-2xl font-bold text-gray-900 group-hover:text-white transition-colors">Universal Robot</h5>
+              <p class="mt-2 text-gray-800 group-hover:text-white/90 transition-colors">mulai dari 500.000.000/unit</p>
+            </div>
+            <img src="https://dkeswcdfflabksfaxdkk.supabase.co/storage/v1/object/public/bucket/assets/UR3e-a-1.png"
+                alt="Universal Robot"
+                loading="lazy"
+                class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-300">
+          </a>
+        </div>
+
+        <!-- Grid Kanan -->
+        <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+          <!-- Jasa Projek Custom -->
+          <div class="sm:col-span-2"
+              data-reveal="right" data-reveal-delay="120">
+            <a href="https://id.shp.ee/96sDkkQ"
+              class="h-full group rounded-3xl bg-[#B0B0B0] p-8 flex flex-col sm:flex-row items-center justify-between gap-6 overflow-hidden hover:bg-primary transition-colors duration-300">
+              <div class="relative z-10 sm:w-1/2">
+                <h5 class="text-2xl font-bold text-gray-900 group-hover:text-white transition-colors">Jasa Projek Custom</h5>
+                <p class="mt-2 text-gray-800 group-hover:text-white/90 transition-colors">....</p>
+              </div>
+              <img src="https://dkeswcdfflabksfaxdkk.supabase.co/storage/v1/object/public/bucket/assets/enjiner-scaled.png"
+                  alt="Jasa Projek Custom"
+                  loading="lazy"
+                  class="w-full sm:w-1/2 object-contain max-h-[150px] drop-shadow-md group-hover:scale-105 transition-transform duration-300">
+            </a>
+          </div>
+
+          <!-- Jasa 3D Printing -->
+          <div data-reveal="right" data-reveal-delay="240">
+            <a href="https://id.shp.ee/AwbDQ1T"
+              class="h-full group rounded-3xl bg-[#B0B0B0] p-8 flex flex-col justify-between overflow-hidden relative min-h-[250px] hover:bg-primary transition-colors duration-300">
+              <div class="relative z-10">
+                <h5 class="text-2xl font-bold text-gray-900 group-hover:text-white transition-colors">Jasa 3d Printing</h5>
+                <p class="mt-2 text-gray-800 group-hover:text-white/90 transition-colors">mulai dari 500/gram</p>
+              </div>
+              <img src="https://dkeswcdfflabksfaxdkk.supabase.co/storage/v1/object/public/bucket/assets/Polar.png"
+                  alt="Jasa 3d Printing"
+                  loading="lazy"
+                  class="absolute -bottom-4 right-4 w-2/3 object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-300">
+            </a>
+          </div>
+
+          <!-- Jasa Cetak PCB -->
+          <div data-reveal="right" data-reveal-delay="360">
+            <a href="https://id.shp.ee/JnDvLfd"
+              class="h-full group rounded-3xl bg-[#B0B0B0] p-8 flex flex-col justify-between overflow-hidden relative min-h-[250px] hover:bg-primary transition-colors duration-300">
+              <div class="relative z-10">
+                <h5 class="text-2xl font-bold text-gray-900 group-hover:text-white transition-colors">Jasa Cetak PCB</h5>
+                <p class="mt-2 text-gray-800 group-hover:text-white/90 transition-colors">mulai dari 35.000/pcs</p>
+              </div>
+              <img src="https://dkeswcdfflabksfaxdkk.supabase.co/storage/v1/object/public/bucket/assets/pcb.png"
+                  alt="Jasa Cetak PCB"
+                  loading="lazy"
+                  class="absolute -bottom-4 right-4 w-2/3 object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-300">
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= ESP 12 OLED R1 ================= -->
+    <section class="max-w-site mx-auto px-4 lg:px-6 pb-12 lg:pb-16">
+      <div class="rounded-3xl bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden"
+           data-reveal="zoom">
+        <div class="grid lg:grid-cols-2 items-center gap-8 p-8 lg:p-14">
+          <div data-reveal="left" data-reveal-delay="100">
+            <h2 class="text-3xl lg:text-4xl font-bold text-white">ESP 12 OLED R1</h2>
+            <p class="mt-4 text-white/85 leading-relaxed">
+              ESP 12 OLED R1 adalah sebuah papan mikrokontroler berbasis esp8266 yang dilengkapi dengen
+              lcd oled 0.98″ dan 4 tombol push button yang dibungkus dengan case yang elegan
+            </p>
+            <a href="#" class="mt-7 inline-flex items-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-ink hover:bg-white/90 transition">
+              Buy Now
+            </a>
+          </div>
+          <div class="flex justify-center lg:justify-end" data-reveal="right" data-reveal-delay="220">
+            <img src="https://dkeswcdfflabksfaxdkk.supabase.co/storage/v1/object/public/bucket/product/image/produk_manfah__9__v2-removebg-preview.png"
+                 alt="ESP 12 OLED R1"
+                 loading="lazy"
+                 class="w-56 sm:w-72 lg:w-80 h-auto drop-shadow-2xl">
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= PRODUK UNGGULAN ================= -->
+    <section class="max-w-site mx-auto px-4 lg:px-6 pb-12 lg:pb-16">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8"
+           data-reveal>
+        <div>
+          <h3 class="text-2xl lg:text-3xl font-bold text-ink">Produk Unggulan</h3>
+          <p class="mt-2 text-body text-sm">Berikut adalah beberapa produk manfahbot industrial automation</p>
+        </div>
+        <a href="/products"
+           class="self-start sm:self-auto rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gray-200 transition">
+          View All
+        </a>
+      </div>
+
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <% if (typeof productTerbaru !== 'undefined' && productTerbaru.length) { %>
+          <% productTerbaru.forEach(function(p, i) { %>
+            <li class="group"
+                data-reveal
+                data-reveal-delay="<%= (i % 3) * 120 %>">
+              <% const slugify = (text) => text.toLowerCase().trim().replace(/\s+/g, '-'); %>
+              <a href="/products/<%= slugify(p.nama) %>"
+                class="block aspect-square overflow-hidden rounded-2xl bg-softer">
+                <img src="<%= p.image_url %>"
+                    alt="<%= p.nama %>"
+                    loading="lazy"
+                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              </a>
+              <h2 class="mt-3 text-base font-semibold">
+                <a href="/products/<%= slugify(p.nama) %>" class="hover:text-primary transition"><%= p.nama %></a>
+              </h2>
+              <span class="mt-1 block font-bold text-primary">Rp <%= Number(p.harga).toLocaleString('id-ID') %></span>
+              <div class="mt-1 text-xs text-body">
+                <a href="https://manfahbot.cc/product-category/<%= (p.kategori || 'uncategorized').toLowerCase() %>/" class="hover:text-primary transition">
+                  <%= p.kategori ? p.kategori : "Uncategorized" %>
+                </a>
+              </div>
+              <form action="/cart/add" method="POST" class="mt-4">
+                <input type="hidden" name="id_product" value="<%= p.id_product %>">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit"
+                        class="block w-full rounded-lg bg-gray-100 py-2.5 text-center text-sm font-semibold text-ink hover:bg-gray-200 transition">
+                  Tambah ke keranjang
+                </button>
+              </form>
+            </li>
+          <% }); %>
+        <% } else { %>
+          <li class="col-span-full text-center text-sm text-body py-6">Belum ada produk.</li>
+        <% } %>
+      </ul>
+    </section>
+
+
+    <!-- ================= BLOG TERBARU ================= -->
+    <section class="max-w-site mx-auto px-4 lg:px-6 pb-12 lg:pb-16">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8"
+           data-reveal>
+        <div>
+          <h3 class="text-2xl lg:text-3xl font-bold text-ink">Blog Terbaru</h3>
+          <p class="mt-2 text-body text-sm">Berikut adalah blog atau tutorial terbaru dari manfahbot industrial automation</p>
+        </div>
+        <a href="/blog"
+           class="self-start sm:self-auto rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gray-200 transition">
+          View All
+        </a>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <% if (typeof postTerbaru !== 'undefined' && postTerbaru.length) { %>
+          <% postTerbaru.forEach(function(p, i) { %>
+            <div class="h-full" data-reveal data-reveal-delay="<%= (i % 3) * 120 %>">
+              <article class="group rounded-2xl overflow-hidden bg-white border border-slate-100 shadow-sm hover:shadow-xl transition-shadow"
+                      data-reveal
+                      data-reveal-delay="<%= (i % 3) * 120 %>">
+                <a href="/<%= p.slug %>/" class="block aspect-[4/3] overflow-hidden">
+                  <img src="<%= p.cover_url %>"
+                      alt="post_<%= p.id_post %>"
+                      loading="lazy"
+                      class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                </a>
+                <div class="p-5">
+                  <div class="text-xs font-semibold text-primary">
+                    <% if (p.kategori && p.kategori.length) { %>
+                      <% p.kategori.forEach(function(k, i) { %>
+                        <a href="https://manfahbot.cc/category/<%= (k.slug || k).toString().toLowerCase() %>/" class="hover:underline"><%= k.nama || k %></a><%= (i < p.kategori.length - 1) ? ', ' : '' %>
+                      <% }); %>
+                    <% } else { %>
+                      <a href="https://manfahbot.cc/category/uncategorized/" class="hover:underline">Uncategorized</a>
+                    <% } %>
+                  </div>
+                  <h2 class="mt-2 text-lg font-bold leading-snug">
+                    <a href="https://manfahbot.cc/<%= p.slug || p.judul %>/" class="hover:text-primary transition"><%= p.judul %></a>
+                  </h2>
+                  <p class="mt-2 text-sm text-body leading-relaxed">
+                    <%= p.deskripsi_singkat %>...
+                  </p>
+                  <a href="https://manfahbot.cc/<%= p.slug || p.judul %>/"
+                    class="mt-4 inline-block rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gray-200 transition">
+                    Read More
+                  </a>
+                </div>
+              </article>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <p class="col-span-full text-center text-sm text-body py-6">Belum ada artikel.</p>
+        <% } %>
+      </div>
+    </section>
+
+
+    <!-- ================= INFO CARDS ================= -->
+    <section class="max-w-site mx-auto px-4 lg:px-6 pb-12 lg:pb-20">
+
+      <!-- ===== Baris Atas: 3 Kolom ===== -->
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+        <!-- Sensor -->
+        <div class="flex flex-col rounded-2xl bg-white border border-gray-200 p-7"
+             data-reveal data-reveal-delay="0">
+          <div class="w-12 h-12 rounded-full bg-ink text-white flex items-center justify-center">
+            <svg class="w-5 h-5" viewBox="0 0 512 512" fill="currentColor"><path d="M416 0c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm0 128c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm-160-16C256 50.1 205.9 0 144 0S32 50.1 32 112v166.5C12.3 303.2 0 334 0 368c0 79.5 64.5 144 144 144s144-64.5 144-144c0-34-12.3-64.9-32-89.5V112zM144 448c-44.1 0-80-35.9-80-80 0-25.5 12.2-48.9 32-63.8V112c0-26.5 21.5-48 48-48s48 21.5 48 48v192.2c19.8 14.8 32 38.3 32 63.8 0 44.1-35.9 80-80 80z"/></svg>
+          </div>
+          <h5 class="mt-5 text-lg font-bold">Sensor</h5>
+          <p class="mt-2 text-sm text-body leading-relaxed flex-1">
+            Sensor adalah perangkat yang mendeteksi dan merespons perubahan di lingkungan sekitar,
+            kemudian mengubahnya menjadi sinyal yang dapat diproses oleh sistem lain.
+          </p>
+          <a href="https://manfahbot.cc/pengertian-dan-jenis-jenis-sensor/"
+            class="mt-5 inline-block self-start rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gray-200 transition">
+            Learn More
+          </a>
+        </div>
+
+        <!-- Mikrokontroler -->
+        <div class="flex flex-col rounded-2xl bg-white border border-gray-200 p-7"
+             data-reveal data-reveal-delay="120">
+          <div class="w-12 h-12 rounded-full bg-ink text-white flex items-center justify-center">
+            <svg class="w-5 h-5" viewBox="0 0 512 512" fill="currentColor"><path d="M416 48v416c0 26.51-21.49 48-48 48H144c-26.51 0-48-21.49-48-48V48c0-26.51 21.49-48 48-48h224c26.51 0 48 21.49 48 48z"/></svg>
+          </div>
+          <h5 class="mt-5 text-lg font-bold">Mikrokontroler</h5>
+          <p class="mt-2 text-sm text-body leading-relaxed flex-1">
+            Mikrokontroler adalah sebuah komputer kecil (dalam bentuk chip IC) yang dirancang untuk
+            menjalankan tugas atau operasi tertentu dalam sistem tertanam (embedded systems).
+          </p>
+          <a href="https://manfahbot.cc/pengertian-dan-jenis-jenis-mikrokontroler-dan-mikroprosesor/"
+            class="mt-5 inline-block self-start rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gray-200 transition">
+            Learn More
+          </a>
+        </div>
+
+        <!-- Output Aktuator -->
+        <div class="flex flex-col rounded-2xl bg-white border border-gray-200 p-7"
+             data-reveal data-reveal-delay="240">
+          <div class="w-12 h-12 rounded-full bg-ink text-white flex items-center justify-center">
+            <svg class="w-5 h-5" viewBox="0 0 512 512" fill="currentColor"><path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/></svg>
+          </div>
+          <h5 class="mt-5 text-lg font-bold">Output Aktuator</h5>
+          <p class="mt-2 text-sm text-body leading-relaxed flex-1">
+            Output aktuator adalah tindakan fisik atau respon nyata yang dilakukan oleh suatu aktuator
+            setelah menerima perintah dari sistem kendali (seperti mikrokontroler atau PLC).
+          </p>
+          <a href="https://manfahbot.cc/pengertian-dan-jenis-jenis-output-aktuator/"
+            class="mt-5 inline-block self-start rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gray-200 transition">
+            Learn More
+          </a>
+        </div>
+
+      </div>
+
+      <!-- ===== Baris Bawah: 2 Kolom ===== -->
+      <div class="grid gap-6 sm:grid-cols-2 mt-6">
+
+        <!-- Internet Of Things -->
+        <div class="flex flex-col rounded-2xl bg-white border border-gray-200 p-7"
+             data-reveal data-reveal-delay="0">
+          <div class="w-12 h-12 rounded-full bg-ink text-white flex items-center justify-center">
+            <svg class="w-5 h-5" viewBox="0 0 640 512" fill="currentColor"><path d="M634.91 154.88C457.74-8.99 182.19-8.93 5.09 154.88c-6.66 6.16-6.79 16.59-.35 22.98l34.24 33.97c6.14 6.1 16.02 6.23 22.4.38 145.92-133.68 371.3-133.71 517.25 0 6.38 5.85 16.26 5.71 22.4-.38l34.24-33.97c6.43-6.39 6.3-16.82-.36-22.98zM320 352c-35.35 0-64 28.65-64 64s28.65 64 64 64 64-28.65 64-64-28.65-64-64-64zm202.67-83.59c-115.26-101.93-290.21-101.82-405.34 0-6.9 6.1-7.12 16.69-.57 23.15l34.44 33.99c6 5.92 15.66 6.32 22.05.8 83.95-72.57 209.74-72.41 293.49 0 6.39 5.52 16.05 5.13 22.05-.8l34.44-33.99c6.56-6.46 6.33-17.06-.56-23.15z"/></svg>
+          </div>
+          <h5 class="mt-5 text-lg font-bold">Internet Of Things</h5>
+          <p class="mt-2 text-sm text-body leading-relaxed flex-1">
+            IoT (Internet of Things) adalah konsep di mana berbagai perangkat fisik seperti sensor, mesin,
+            kendaraan, peralatan rumah tangga, dan alat elektronik lainnya terhubung ke internet dan dapat
+            mengirim, menerima, serta bertukar data secara otomatis tanpa interaksi manusia secara langsung.
+          </p>
+          <a href="https://manfahbot.cc/pengertian-dan-penerapan-iot-internet-of-things/"
+            class="mt-5 inline-block self-start rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gray-200 transition">
+            Learn More
+          </a>
+        </div>
+
+        <!-- Sistem Otomatisasi Konvensional -->
+        <div class="flex flex-col rounded-2xl bg-white border border-gray-200 p-7"
+             data-reveal data-reveal-delay="140">
+          <div class="w-12 h-12 rounded-full bg-ink text-white flex items-center justify-center">
+            <svg class="w-5 h-5" viewBox="0 0 512 512" fill="currentColor"><path d="M216 260c0 15.464-12.536 28-28 28s-28-12.536-28-28c0-44.112 35.888-80 80-80s80 35.888 80 80c0 15.464-12.536 28-28 28s-28-12.536-28-28c0-13.234-10.767-24-24-24s-24 10.766-24 24zm24-176c-97.047 0-176 78.953-176 176 0 15.464 12.536 28 28 28s28-12.536 28-28c0-66.168 53.832-120 120-120s120 53.832 120 120c0 75.164-71.009 70.311-71.997 143.622L288 404c0 28.673-23.327 52-52 52-15.464 0-28 12.536-28 28s12.536 28 28 28c59.475 0 107.876-48.328 108-107.774.595-34.428 72-48.24 72-144.226 0-97.047-78.953-176-176-176zm-80 236c-17.673 0-32 14.327-32 32s14.327 32 32 32 32-14.327 32-32-14.327-32-32-32zM32 448c-17.673 0-32 14.327-32 32s14.327 32 32 32 32-14.327 32-32-14.327-32-32-32z"/></svg>
+          </div>
+          <h5 class="mt-5 text-lg font-bold">Sistem Otomatisasi Konvensional</h5>
+          <p class="mt-2 text-sm text-body leading-relaxed flex-1">
+            Sistem Otomatisasi Konvensional adalah sistem otomatisasi yang bekerja tanpa koneksi internet
+            dan hanya mengandalkan perangkat fisik seperti sensor, aktuator, relay, timer, atau PLC
+            (Programmable Logic Controller) untuk menjalankan suatu proses secara otomatis.
+            Contoh: Timer pompa air otomatis yang aktif hanya pada jam tertentu.
+          </p>
+          <a href="https://manfahbot.cc/pengertian-sistem-otomatisasi-konvensional/"
+            class="mt-5 inline-block self-start rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gray-200 transition">
+            Learn More
+          </a>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</main>
+
+<%- include('partials/mainFooter') %>

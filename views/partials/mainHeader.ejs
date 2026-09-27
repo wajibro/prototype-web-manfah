@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+<title>Home - manfahbot industrial automation</title>
+<meta name="description" content="Robotika dan sistem kendali industri seperti penggunaan PLC, HMI, dan microcontroller.">
+<link rel="canonical" href="/">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#5B38ED',
+        primarydark: '#4928cf',
+        body: '#4d5d6d',
+        ink: '#111518',
+        soft: '#E7EBEE',
+        softer: '#F3F5F7',
+      },
+      fontFamily: {
+        sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
+      maxWidth: {
+        site: '1200px',
+      },
+    }
+  }
+}
+</script>
+<%
+  const _bg = {
+    image: (typeof bgImage !== 'undefined' && bgImage) ? bgImage : ''
+  };
+%>
+<style>
+  html { scroll-behavior: smooth; }
+  body { 
+    font-family: 'Poppins', sans-serif;
+    background-image: url('<%- _bg.image %>'); 
+  }
+
+  /* ====== NAV LINK – STATE DASAR (REDUP) ====== */
+  .nav-link,
+  .nav-link-home {
+    position: relative;
+    border-radius: 0.5rem;
+    transition: color .3s ease,
+                background-color .3s ease,
+                text-shadow .3s ease;
+  }
+
+  /* ====== STATE 1: HEADER TRANSPARAN (belum scroll) ====== */
+  /* Redup: putih dengan opacity 70% */
+  #site-header:not(.scrolled) .nav-link,
+  #site-header:not(.scrolled) .nav-link-home {
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: none;
+  }
+
+  /* Hover: putih penuh + glow putih */
+  #site-header:not(.scrolled) .nav-link:hover,
+  #site-header:not(.scrolled) .nav-link-home:hover {
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.85),
+                 0 0 24px rgba(255, 255, 255, 0.35);
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Aktif: sama seperti hover, permanen */
+  #site-header:not(.scrolled) .nav-link[aria-current="page"],
+  #site-header:not(.scrolled) .nav-link-home[aria-current="page"] {
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.85),
+                 0 0 24px rgba(255, 255, 255, 0.35);
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  /* ====== STATE 2: HEADER PUTIH (setelah scroll) ====== */
+  /* Redup: slate-500 */
+  #site-header.scrolled .nav-link,
+  #site-header.scrolled .nav-link-home {
+    color: #64748b; /* slate-500 */
+    text-shadow: none;
+  }
+
+  /* Hover: primary + glow ungu */
+  #site-header.scrolled .nav-link:hover,
+  #site-header.scrolled .nav-link-home:hover {
+    color: #5B38ED;
+    text-shadow: 0 0 12px rgba(91, 56, 237, 0.55),
+                 0 0 22px rgba(91, 56, 237, 0.25);
+    background-color: #F3F5F7; /* softer */
+  }
+
+  /* Aktif: permanen menyala */
+  #site-header.scrolled .nav-link[aria-current="page"],
+  #site-header.scrolled .nav-link-home[aria-current="page"] {
+    color: #5B38ED;
+    text-shadow: 0 0 12px rgba(91, 56, 237, 0.55),
+                 0 0 22px rgba(91, 56, 237, 0.25);
+    background-color: #F3F5F7;
+  }
+
+  /* ====== HEADER ICON (search/account/cart/hamburger) ====== */
+  #site-header:not(.scrolled) .header-icon { color: rgba(255,255,255,0.75); }
+  #site-header:not(.scrolled) .header-icon:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.12);
+    text-shadow: 0 0 10px rgba(255,255,255,0.7);
+  }
+
+  #site-header.scrolled .header-icon { color: #64748b; }
+  #site-header.scrolled .header-icon:hover {
+    color: #5B38ED;
+    background-color: #F3F5F7;
+  }
+
+  /* ====== DROPDOWN ====== */
+  .dropdown-link {
+    color: #64748b; /* redup default */
+    transition: color .2s, background-color .2s, text-shadow .2s;
+  }
+  .dropdown-link:hover {
+    color: #5B38ED;
+    background-color: #F3F5F7;
+    text-shadow: 0 0 10px rgba(91, 56, 237, 0.4);
+  }
+  .dropdown-link[aria-current="page"] {
+    color: #5B38ED;
+    background-color: #F3F5F7;
+    text-shadow: 0 0 10px rgba(91, 56, 237, 0.4);
+  }
+</style>
+<!-- ================= SCROLL REVEAL STYLES ================= -->
+<style>
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.8s cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  [data-reveal="left"]   { transform: translateX(-36px); }
+  [data-reveal="right"]  { transform: translateX(36px); }
+  [data-reveal="zoom"]   { transform: scale(0.94); }
+  [data-reveal="fade"]   { transform: none; }
+
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+<style>
+  /* ---------- HEADING ANCHOR SCROLL OFFSET ---------- */
+.prose-blog h1,
+.prose-blog h2,
+.prose-blog h3 {
+    scroll-margin-top: 100px;    /* biar tidak ketutup navbar saat klik TOC */
+}
+
+/* ---------- CODE BLOCK ---------- */
+.code-block {
+    margin: 1.5rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #1f2937;
+    background: #0d1117;
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    font-size: 0.75rem;
+    color: #8b949e;
+}
+
+.code-lang {
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.copy-btn {
+    background: transparent;
+    border: 1px solid #30363d;
+    color: #8b949e;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.copy-btn:hover {
+    background: #21262d;
+    color: #f0f6fc;
+}
+
+.code-block pre {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+}
+
+.code-block pre code {
+    background: transparent;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #e6edf3;
+}
+
+.inline-code {
+    background: #f3f4f6;
+    color: #dc2626;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.875em;
+}
+</style>
+<style>
+  /* ==========================================================
+   TOC BOX — persis seperti gambar
+   ========================================================== */
+.toc-box {
+    background: #ffffff;
+    border: 1px solid #d1d5db;           /* abu tipis */
+    border-radius: 8px;
+    padding: 1.75rem 2rem;
+    margin: 1.5rem 0 2rem;
+    max-width: 100%;
+}
+
+/* Judul TOC = heading h2 tepat sebelum .toc-box */
+.prose-blog h2:has(+ .toc-box),
+.prose-blog h2 + .toc-box + h2,
+.prose-blog h2:first-child {
+    /* override border-bottom default di h2 kalau ada */
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* Fallback: kalau heading "Table Of Contents" adalah h2 pertama */
+.prose-blog .toc-box {
+    margin-top: 0.5rem;
+}
+
+/* Judul di atas TOC (dari markdown ## Table Of Contents) */
+.prose-blog > h2:first-child,
+.prose-blog > h2:has(+ .toc-box) {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #4b5563;                       /* abu medium */
+    margin: 1rem 0 0.75rem;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* List dalam TOC */
+.toc-list {
+    list-style: disc !important;
+    margin: 0 !important;
+    padding-left: 1.5rem !important;
+}
+
+.toc-list li {
+    margin: 0.5rem 0 !important;
+    padding-left: 0.25rem !important;
+    color: #6b7280;
+}
+
+.toc-list li::marker {
+    color: #6b7280;                       /* bullet abu */
+    font-size: 0.9em;
+}
+
+/* Link TOC — biru gelap dengan underline */
+.toc-list a,
+.toc-box a {
+    color: #1e3a5f !important;            /* biru navy gelap */
+    text-decoration: underline !important;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: #9ca3af;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.15s, text-decoration-color 0.15s;
+}
+
+.toc-list a:hover,
+.toc-box a:hover {
+    color: #0c2340 !important;
+    text-decoration-color: #1e3a5f;
+}
+</style>
+</head>
+
+<body class="bg-white text-ink antialiased"
+      style="background-size: cover;
+             background-position: center;
+             background-attachment: fixed;
+             background-repeat: no-repeat;">
+             
+<!-- ================= HEADER ================= -->
+<header id="site-header" class="fixed top-0 left-0 right-0 z-50 bg-transparent transition-all duration-300">
+  <div class="max-w-site mx-auto px-4 lg:px-6">
+    <div class="flex items-center justify-between h-20">
+
+      <!-- Logo -->
+      <a href="/" class="shrink-0">
+        <img id="logo-img" src="https://dkeswcdfflabksfaxdkk.supabase.co/storage/v1/object/public/bucket/assets/manfah_white.png"
+             alt="manfahbot industrial automation" class="h-8 lg:h-9 w-auto transition-opacity duration-300">
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-1">
+        <a href="/" class="nav-link-home px-3 py-2 text-sm font-medium transition-all duration-300 
+        text-slate-100 hover:text-primary hover:shadow-[0_0_12px_rgba(59,130,246,0.4)]">
+          Home</a>
+        <a href="/blog" class="nav-link px-3 py-2 text-sm font-medium transition-all duration-300 
+        text-slate-500 hover:text-primary hover:shadow-[0_0_12px_rgba(59,130,246,0.4)]">
+          Blogs</a>
+        <a href="/products" class="nav-link px-3 py-2 text-sm font-medium transition-all duration-300 hover:text-primary 
+        text-slate-500 hover:shadow-[0_0_12px_rgba(59,130,246,0.4)]">
+          Products</a>
+        <a href="/jasa" class="nav-link px-3 py-2 text-sm font-medium transition-all duration-300 hover:text-primary 
+        text-slate-500 hover:shadow-[0_0_12px_rgba(59,130,246,0.4)]">
+          Tool</a>
+        <a href="/download" class="nav-link px-3 py-2 text-sm font-medium transition-all duration-300 hover:text-primary 
+        text-slate-500 hover:shadow-[0_0_12px_rgba(59,130,246,0.4)]">
+          Download</a>
+
+        <!-- Dropdown -->
+        <div class="relative group">
+          <a href="#About" class="nav-link flex items-center gap-1 px-3 py-2 text-sm font-medium transition">
+            About
+            <svg class="w-2.5 h-2.5 mt-0.5" viewBox="0 0 15 15" fill="currentColor"><path d="M2.1,3.2l5.4,5.4l5.4-5.4L15,4.3l-7.5,7.5L0,4.3L2.1,3.2z"/></svg>
+          </a>
+          <ul class="invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 absolute left-0 top-full pt-2 w-52">
+            <li class="bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden py-1">
+              <a href="/about" class="block px-4 py-2.5 text-sm text-ink hover:bg-softer hover:text-primary transition">About Us</a>
+              <a href="/contact-us" class="block px-4 py-2.5 text-sm text-ink hover:bg-softer hover:text-primary transition">Contact Us</a>
+              <a href="#reviews" class="block px-4 py-2.5 text-sm text-ink hover:bg-softer hover:text-primary transition">Reviews</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Icons -->
+      <div class="flex items-center gap-1">
+        <!-- Search -->
+        <button type="button" aria-label="Search" class="header-icon w-10 h-10 flex items-center justify-center rounded-full transition">
+          <svg class="w-4 h-4" viewBox="0 0 15 15" fill="currentColor"><path d="M14.8,13.7L12,11c0.9-1.2,1.5-2.6,1.5-4.2c0-3.7-3-6.8-6.8-6.8S0,3,0,6.8s3,6.8,6.8,6.8c1.6,0,3.1-0.6,4.2-1.5l2.8,2.8c0.1,0.1,0.3,0.2,0.5,0.2s0.4-0.1,0.5-0.2C15.1,14.5,15.1,14,14.8,13.7z M1.5,6.8c0-2.9,2.4-5.2,5.2-5.2S12,3.9,12,6.8S9.6,12,6.8,12S1.5,9.6,1.5,6.8z"/></svg>
+        </button>
+
+        <!-- views/partials/mainHeader.ejs — ganti bagian ikon Cart -->
+        <a href="/cart" aria-label="Shopping cart"
+          class="header-icon relative w-10 h-10 flex items-center justify-center rounded-full transition">
+          <%
+            const _cartCount = (typeof cartCount !== 'undefined') ? (Number(cartCount) || 0) : 0;
+          %>
+          <% if (_cartCount > 0) { %>
+            <span class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">
+              <%= _cartCount > 99 ? '99+' : _cartCount %>
+            </span>
+          <% } %>
+          <svg class="w-4 h-4" viewBox="0 0 15 15" fill="currentColor"><path d="M11.2,3.5V1.8c0-1-0.8-1.8-1.8-1.8h-4c-1,0-1.8,0.8-1.8,1.8v1.8H0v9.8c0,1,0.8,1.8,1.8,1.8h11.5c1,0,1.8-0.8,1.8-1.8V3.5H11.2zM5.2,1.8c0-0.1,0.1-0.2,0.2-0.2h4c0.1,0,0.2,0.1,0.2,0.2v1.8H5.2V1.8z M13.5,13.2c0,0.1-0.1,0.2-0.2,0.2H1.8c-0.1,0-0.2-0.1-0.2-0.2V5h12V13.2z"/></svg>
+        </a>
+
+        <!-- Hamburger -->
+        <button id="menu-btn" type="button" aria-label="Menu" class="header-icon lg:hidden w-10 h-10 flex items-center justify-center rounded-full transition">
+          <svg class="w-5 h-4" viewBox="0 0 18 14" fill="currentColor">
+            <rect y="0" width="18" height="1.7" rx="1"/>
+            <rect y="6.15" width="18" height="1.7" rx="1"/>
+            <rect y="12.3" width="18" height="1.7" rx="1"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Nav -->
+  <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-100 bg-white">
+    <nav class="max-w-site mx-auto px-4 py-3 flex flex-col">
+      <a href="/" class="py-3 text-sm font-medium text-primary border-b border-slate-50">Home</a>
+      <a href="/blog" class="py-3 text-sm font-medium text-ink border-b border-slate-50">Blog</a>
+      <a href="/products" class="py-3 text-sm font-medium text-ink border-b border-slate-50">Products</a>
+      <a href="/jasa" class="py-3 text-sm font-medium text-ink border-b border-slate-50">Tool</a>
+      <a href="/download" class="py-3 text-sm font-medium text-ink border-b border-slate-50">Download</a>
+      <a href="/about-us" class="py-3 text-sm font-medium text-ink border-b border-slate-50">About Us</a>
+      <a href="/contact-us" class="py-3 text-sm font-medium text-ink">Contact Us</a>
+      <a href="/cart" class="py-3 text-sm font-medium text-ink border-b border-slate-50">Cart</a>
+    </nav>
+  </div>
+</header>

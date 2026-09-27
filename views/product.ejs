@@ -1,0 +1,171 @@
+<%- include('partials/mainHeader', {
+  bgImage: product.image_url || "https://dkeswcdfflabksfaxdkk.supabase.co/storage/v1/object/public/bucket/assets/photo-1517420704952-d9f39e95b43e.avif"
+}); %>
+
+<main>
+  <!-- ================= HERO ================= -->
+  <section class="relative overflow-hidden h-[300px] lg:h-[380px] flex items-center justify-center">
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"></div>
+    <div class="absolute inset-0 bg-black/55"></div>
+
+    <div class="relative z-10 text-center text-white px-4 max-w-3xl mx-auto">
+      <p class="text-xs lg:text-sm font-medium tracking-wider uppercase text-white/80"
+         data-reveal data-reveal-delay="0">
+        <a href="/" class="text-white/50 hover:text-white/90">Home</a> /
+        <a href="/products" class="text-white/50 hover:text-white/90">Product</a>
+      </p>
+      <h1 class="mt-2 text-3xl lg:text-5xl font-bold leading-tight text-white"
+          data-reveal data-reveal-delay="120">
+        <%= product.nama %>
+      </h1>
+    </div>
+  </section>
+
+  <div class="bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+
+      <div class="grid lg:grid-cols-2 gap-10">
+
+        <!-- ================= GAMBAR ================= -->
+        <div data-reveal="left">
+          <div class="rounded-2xl overflow-hidden bg-softer aspect-square border border-gray-100">
+            <% if (product.image_url) { %>
+              <img src="<%= product.image_url %>" alt="<%= product.nama %>"
+                   class="w-full h-full object-cover">
+            <% } else { %>
+              <div class="w-full h-full flex items-center justify-center text-gray-400">
+                No Image
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- ================= INFO PRODUK ================= -->
+        <div class="flex flex-col" data-reveal="right">
+
+          <!-- Kategori & Brand -->
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <% if (product.kategori) { %>
+              <a href="/products?kategori=<%= product.kategori.toLowerCase() %>"
+                 class="inline-block bg-primary/10 text-primary font-semibold px-3 py-1 rounded-full hover:bg-primary/20 transition">
+                <%= product.kategori %>
+              </a>
+            <% } %>
+            <% if (product.brand) { %>
+              <span class="inline-block bg-gray-100 text-gray-700 font-semibold px-3 py-1 rounded-full">
+                <%= product.brand %>
+              </span>
+            <% } %>
+          </div>
+
+          <!-- Nama -->
+          <h2 class="mt-4 text-2xl lg:text-3xl font-extrabold text-ink leading-snug">
+            <%= product.nama %>
+          </h2>
+
+          <!-- Harga -->
+          <p class="mt-5 text-3xl lg:text-4xl font-extrabold text-primary">
+            Rp <%= Number(product.harga).toLocaleString('id-ID') %>
+          </p>
+
+          <!-- Info singkat -->
+          <div class="mt-6 space-y-2 text-sm">
+            <div class="flex justify-between border-b border-gray-100 pb-2">
+              <span class="text-body">Stok</span>
+              <span class="font-semibold text-ink"><%= product.Stok ?? 0 %></span>
+            </div>
+            <% if (product['Jenis Order']) { %>
+              <div class="flex justify-between border-b border-gray-100 pb-2">
+                <span class="text-body">Jenis Order</span>
+                <span class="font-semibold text-ink"><%= product['Jenis Order'] %></span>
+              </div>
+            <% } %>
+          </div>
+
+          <!-- Form tambah keranjang -->
+          <form action="/cart/add" method="POST" class="mt-8 flex items-stretch gap-3">
+            <input type="hidden" name="id_product" value="<%= product.id_product %>">
+
+            <input type="number" name="quantity" value="1" min="1"
+                   max="<%= product.Stok || 1 %>"
+                   class="w-20 h-12 rounded-lg border border-gray-200 text-center text-sm focus:outline-none focus:ring-2 focus:ring-primary/40">
+
+            <button type="submit"
+                    class="flex-1 h-12 rounded-xl bg-primary text-white font-bold tracking-wide hover:bg-primarydark transition">
+              TAMBAH KE KERANJANG
+            </button>
+          </form>
+
+          <a href="/products"
+             class="mt-6 inline-flex items-center text-sm text-body hover:text-primary transition">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Kembali ke daftar produk
+          </a>
+
+        </div>
+      </div>
+
+      <!-- ================= DESKRIPSI MARKDOWN ================= -->
+      <% if (content && content.trim()) { %>
+        <section class="mt-14 lg:mt-20">
+          <h2 class="text-2xl lg:text-3xl font-extrabold text-ink mb-6">
+            Deskripsi Produk
+          </h2>
+
+          <article class="blog-content prose prose-lg max-w-none">
+            <%- content %>
+          </article>
+        </section>
+      <% } %>
+
+        <section class="mt-14 lg:mt-20" data-reveal>
+          <h2 class="text-2xl lg:text-3xl font-extrabold text-ink mb-6">
+            Spesifikasi Dimensi
+          </h2>
+
+          <div class="table-wrapper overflow-x-auto my-6">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-4 text-xs font-bold text-gray-700 tracking-wider text-left">
+                    Lebar (mm)
+                  </th>
+                  <th class="px-6 py-4 text-xs font-bold text-gray-700 tracking-wider text-left">
+                    Panjang (mm)
+                  </th>
+                  <th class="px-6 py-4 text-xs font-bold text-gray-700 tracking-wider text-left">
+                    Tinggi (mm)
+                  </th>
+                  <th class="px-6 py-4 text-xs font-bold text-gray-700 tracking-wider text-left">
+                    Berat (gr)
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4 text-sm text-gray-600">
+                    <%= product.Lebar != null ? product.Lebar : '-' %> mm
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-600">
+                    <%= product.Panjang != null ? product.Panjang : '-' %> mm
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-600">
+                    <%= product.Tinggi != null ? product.Tinggi : '-' %> mm
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-600">
+                    <%= product.Berat != null ? product.Berat : '-' %> gr
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+    </div>
+  </div>
+</main>
+
+<%- include('partials/mainFooter') %>

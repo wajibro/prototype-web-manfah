@@ -1,0 +1,120 @@
+<%- include('partials/mainHeader', {
+    bgImage: "https://dkeswcdfflabksfaxdkk.supabase.co/storage/v1/object/public/bucket/assets/IMG-20260921-WA0013.jpg"
+});%>
+
+<main>
+  <section class="relative overflow-hidden h-[300px] lg:h-[400px] flex items-center justify-center">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('path-to-your-circuit-image.jpg');"></div>
+        <div class="absolute inset-0 bg-black/50"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 text-center text-white px-4">
+      <p class="text-xs lg:text-sm font-medium tracking-[0.2em] uppercase text-white/80 mb-3" data-reveal data-reveal-delay="0">
+        Home / About
+      </p>
+      <h1 class="text-4xl lg:text-6xl font-bold leading-tight text-white" data-reveal data-reveal-delay="120">
+        About Us
+      </h1>
+    </div>
+  </section>
+
+  <!-- ================= TEAM SECTION ================= -->
+  <section class="py-20 lg:py-28 bg-[#f8f9fa]">
+    <div class="max-w-6xl mx-auto px-4 lg:px-6">
+      
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <p class="text-[#F4B41A] font-bold text-xs lg:text-sm tracking-widest uppercase mb-3" data-reveal>
+          About Our Team
+        </p>
+        <h2 class="text-3xl lg:text-4xl font-extrabold text-gray-900 mb-5" data-reveal data-reveal-delay="100">
+          Our leadership & Team
+        </h2>
+        <p class="text-gray-500 text-sm lg:text-base max-w-2xl mx-auto leading-relaxed" data-reveal data-reveal-delay="200">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+        </p>
+      </div>
+
+      <!-- Team Grid -->
+      <!-- Grid ini menggunakan 6 kolom di layar besar. 2 kartu pertama akan menjadi 2 kolom (col-span-3), sisanya 3 kolom (col-span-2) -->
+            <!-- Team Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 lg:gap-8 justify-center">
+        
+        <% creators.forEach((creator, index) => { %>
+          <% 
+            // Logika untuk menentukan lebar kolom
+            let colSpanClass = "lg:col-span-2";
+            if (index < 2) {
+              colSpanClass = "lg:col-span-3";
+            }
+
+            // Logika untuk tata letak kartu
+            let cardLayoutClass = index < 2 
+              ? "flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6" 
+              : "flex-col items-center text-center";
+            
+            // Logika untuk ukuran dan margin foto
+            let imageClass = index < 2 
+              ? "w-28 h-28 md:w-32 md:h-32 mb-4 md:mb-0" 
+              : "w-32 h-32 mb-6";
+            
+            // Logika untuk wrapper teks
+            let textWrapperClass = index < 2 
+              ? "flex flex-col flex-1" 
+              : "flex flex-col items-center w-full";
+            
+            // Logika untuk lebar maksimal deskripsi
+            let descClass = index < 2 
+              ? "text-gray-600 text-sm leading-relaxed" 
+              : "text-gray-600 text-sm leading-relaxed max-w-[280px]";
+          %>
+          
+          <!-- Card -->
+          <div class="<%= colSpanClass %> bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] relative overflow-hidden pt-10 pb-8 px-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] flex <%= cardLayoutClass %>" data-reveal>
+            
+            <!-- Aksen Garis Kuning di Atas -->
+            <div class="absolute top-0 left-0 w-full h-[6px] bg-[#F4B41A]"></div>
+            
+            <!-- Foto Profil -->
+            <div class="<%= imageClass %> rounded-full border-[4px] border-[#F4B41A] overflow-hidden bg-gray-50 flex-shrink-0">
+              <img 
+                src="<%= creator.image_url || 'https://via.placeholder.com/150' %>" 
+                alt="<%= creator.nama %>" 
+                class="w-full h-full object-cover"
+              />
+            </div>
+
+            <!-- Wrapper Teks -->
+            <div class="<%= textWrapperClass %>">
+              <!-- Nama -->
+              <h3 class="text-xl lg:text-2xl font-extrabold text-gray-900 mb-2">
+                <%= creator.nama %>
+              </h3>
+
+              <!-- Jabatan (Diubah menjadi Badge) -->
+              <div class="mb-3">
+                <span class="inline-block bg-[#FFF6D6] text-[#D99B00] text-xs lg:text-sm font-bold px-5 py-1.5 rounded-full whitespace-nowrap">
+                  <%= creator.jabatan %>
+                </span>
+              </div>
+
+              <!-- Pendidikan -->
+              <p class="text-gray-500 text-xs mb-4">
+                <%= creator.pendidikan %>
+              </p>
+
+              <!-- Deskripsi -->
+              <p class="<%= descClass %>">
+                <%= creator.deskripsi %>
+              </p>
+            </div>
+
+          </div>
+        <% }); %>
+        
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/mainFooter') %>
