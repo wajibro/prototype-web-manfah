@@ -137,9 +137,16 @@ export const calculateShippingCost = async (
     for (const item of cartItems) {
       const product = productMap.get(item.id_product);
       if (!product) continue;
-      totalWeight += Number(product.Berat || 0) * item.quantity;
+
+      // Jika Berat null/undefined, default ke 1 gram
+      const itemWeight = (product.Berat === null || product.Berat === undefined) 
+                        ? 1 
+                        : Number(product.Berat);
+
+      totalWeight += itemWeight * item.quantity;
     }
 
+    // Safety net: pastikan total berat minimal 1 gram
     if (totalWeight < 1) totalWeight = 1;
 
     // ---------------------------------------------------------
