@@ -30,14 +30,12 @@ const renderer = new marked.Renderer();
 
 // ---------- HEADING dengan ID (anchor TOC) ----------
 renderer.heading = (text: string, level: number) => {
-    // ⚠️ Signature v4: (text, level, raw, slugger)
     const id = slugifyHeading(text);
-    return `<br><h${level} id="${id}" class="font-bold">${text}</h${level}>`;
+    return `<h${level} id="${id}" class="font-bold">${text}</h${level}>`;
 };
 
 // ---------- CODE BLOCK dengan highlight + tombol copy ----------
 renderer.code = (code: string, infostring: string | undefined) => {
-    // ⚠️ Signature v4: (code, infostring, escaped)
     const lang = (infostring || '').match(/\S*/)?.[0] || '';
     const language = lang && hljs.getLanguage(lang) ? lang : 'plaintext';
     const highlighted = hljs.highlight(code, { language }).value;
@@ -97,11 +95,8 @@ renderer.tablecell = (content: string, flags: { header: boolean; align: 'center'
     const alignClass = flags.align ? `text-${flags.align}` : 'text-left';
     
     if (flags.header) {
-        // Styling untuk Header (th)
         return `<${type} class="px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider ${alignClass}">${content}</${type}>`;
     }
-    
-    // Styling untuk Sel Biasa (td)
     return `<${type} class="px-6 py-4 text-sm text-gray-600 ${alignClass}">${content}</${type}>`;
 };
 
@@ -111,28 +106,83 @@ marked.use({ renderer });
 // POST-PROCESS: Bungkus TOC dengan .toc-box
 // ============================================================
 const wrapToc = (html: string): string => {
-    return html.replace(
-        /<h([1-6])([^>]*)>\s*(Table Of Contents|Daftar Isi|TOC)\s*<\/h\1>\s*(<[uo]l>[\s\S]*?<\/[uo]l>)/gi,
-        (_match, level, _attrs, _title, list) => {
-            if (!/<a href="#/.test(list)) return _match;
+    // 1. Cari posisi heading TOC
+    const tocHeadingRegex = /<h([1-6])([^>]*)>\s*(Table Of Contents|Daftar Isi|TOC)\s*<\/h\1>/gi;
+    const match = tocHeadingRegex.exec(html);
+    
+    if (!match) return html;
 
-            const listWithClass = list
-                .replace(/^<ul/, '<ul class="toc-list"')
-                .replace(/^<ol/, '<ol class="toc-list"');
-
-            return `
-                <div class="toc-box mt-0" data-reveal>
-                    <h${level} class="toc-title">Table Of Contents</h${level}>
-                    ${listWithClass}
-                </div>
-            `;
+    const headingStartIndex = match.index;
+    const headingEndIndex = headingStartIndex + match[0].length;
+    
+    // 2. Cari tag <ol> atau <ul> pertama setelah heading
+    const afterHeading = html.slice(headingEndIndex);
+    let listStartIndex = -1;
+    let listType = '';
+    
+    const olIndex = afterHeading.indexOf('<ol');
+    const ulIndex = afterHeading.indexOf('<ul');
+    
+    if (olIndex !== -1 && (ulIndex === -1 || olIndex < ulIndex)) {
+        listStartIndex = olIndex;
+        listType = 'ol';
+    } else if (ulIndex !== -1) {
+        listStartIndex = ulIndex;
+        listType = 'ul';
+    }
+    
+    if (listStartIndex === -1) return html;
+    
+    const openTag = `<${listType}`;
+    const closeTag = `</${listType}>`;
+    
+    // 3. Hitung kedalaman tag untuk menemukan penutup yang cocok (mengatasi nested list)
+    const openTagEndIndex = afterHeading.indexOf('>', listStartIndex) + 1;
+    if (openTagEndIndex === 0) return html;
+    
+    let depth = 1;
+    let i = openTagEndIndex;
+    
+    while (i < afterHeading.length && depth > 0) {
+        const nextOpen = afterHeading.indexOf(openTag, i);
+        const nextClose = afterHeading.indexOf(closeTag, i);
+        
+        if (nextClose === -1) break; // Tidak ada tag penutup, keluar
+        
+        if (nextOpen !== -1 && nextOpen < nextClose) {
+            depth++;
+            i = nextOpen + openTag.length;
+        } else {
+            depth--;
+            i = nextClose + closeTag.length;
         }
-    );
+    }
+    
+    if (depth !== 0) return html; // Tag tidak seimbang, kembalikan asli
+    
+    const listHtml = afterHeading.slice(listStartIndex, i);
+    const fullMatch = match[0] + afterHeading.slice(0, i);
+    
+    // 4. Pastikan ada link anchor di dalam list
+    if (!/<a href="#/.test(listHtml)) return html;
+    
+    // 5. Tambahkan class toc-list ke tag pembuka
+    const listWithClass = listHtml.replace(new RegExp(`^<${listType}[^>]*>`), `<${listType} class="toc-list">`);
+    
+    // 6. Bungkus dengan div.toc-box
+    const replacement = `
+        <div class="toc-box mt-0" data-reveal>
+            <h${match[1]} class="toc-title">Table Of Contents</h${match[1]}>
+            ${listWithClass}
+        </div>
+    `;
+    
+    return html.replace(fullMatch, replacement);
 };
 
 const wrapTables = (html: string): string => {
     return html.replace(
-        /<table([^>]*)>([\s\S]*?)<\/table>/g, // <-- Regex diubah untuk menangkap atribut class
+        /<table([^>]*)>([\s\S]*?)<\/table>/g,
         '<div class="table-wrapper overflow-x-auto my-6" data-reveal><table$1>$2</table></div>'
     );
 };
