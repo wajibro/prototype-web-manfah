@@ -1,39 +1,175 @@
 <%- include('partials/mainHeader', { bgImage: cover_url }); %>
 
+<%
+  const _recentPosts = (typeof recentPosts !== 'undefined' && Array.isArray(recentPosts)) ? recentPosts : [];
+  const _categories  = (typeof categories  !== 'undefined' && Array.isArray(categories))  ? categories  : [];
+  const _months      = (typeof months      !== 'undefined' && Array.isArray(months))      ? months      : [];
+
+  const _fmtShort = (str) => {
+    if (!str) return '';
+    try {
+      return new Date(str).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    } catch { return ''; }
+  };
+%>
+
 <main>
-    <!-- ================= HERO ================= -->
-    <section class="relative overflow-hidden h-[300px] lg:h-[350px] flex items-center justify-center">
-        <!-- Background dari cover_url -->
-        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"></div>
-        <div class="absolute inset-0 bg-black/50"></div>
+  <!-- ================= HERO ================= -->
+  <section class="relative overflow-hidden h-[300px] lg:h-[350px] flex items-center justify-center">
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"></div>
+    <div class="absolute inset-0 bg-black/50"></div>
 
-        <!-- Konten Hero -->
-        <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-            <h1 class="mt-2 text-3xl lg:text-5xl font-bold leading-tight text-white"
-                data-reveal data-reveal-delay="120">
-                <%= title %>
-            </h1>
+    <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
+      <h1 class="mt-2 text-3xl lg:text-5xl font-bold leading-tight text-white"
+          data-reveal data-reveal-delay="120">
+        <%= title %>
+      </h1>
 
-            <p class="mt-3 text-xs lg:text-base font-medium tracking-wider uppercase text-white/90"
-               data-reveal data-reveal-delay="0">
-                <%= creator.nama %> /
-                <%= new Date(date).toLocaleDateString('id-ID', {
-                    day: 'numeric', month: 'long', year: 'numeric'
-                }) %> /
-                <%= (kategori || []).slice(0, 2).join(', ') %><% if ((kategori || []).length > 2) { %> +<%= kategori.length - 2 %><% } %>
-            </p>
-        </div>
-    </section>
-
-    <!-- ================= KONTEN ================= -->
-     <div class="bg-white">
-        <article class="max-w-3xl mx-auto px-4 lg:px-0 py-8">
-            <!-- Konten Markdown -->
-            <div class="blog-content prose prose-lg max-w-none">
-                <%- content %>
-            </div>
-        </article>
+      <p class="mt-3 text-xs lg:text-base font-medium tracking-wider uppercase text-white/90"
+         data-reveal data-reveal-delay="0">
+        <%= (creator && creator.nama) ? creator.nama : 'Anonim' %> /
+        <%= new Date(date).toLocaleDateString('id-ID', {
+            day: 'numeric', month: 'long', year: 'numeric'
+        }) %> /
+        <%= (kategori || []).slice(0, 2).join(', ') %><% if ((kategori || []).length > 2) { %> +<%= kategori.length - 2 %><% } %>
+      </p>
     </div>
+  </section>
+
+  <!-- ================= KONTEN + SIDEBAR ================= -->
+  <div class="bg-white">
+    <div class="max-w-7xl mx-auto px-4 lg:px-6 py-10 lg:py-14">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
+
+        <!-- ================= ARTIKEL ================= -->
+        <article class="lg:col-span-2 min-w-0">
+          <div class="blog-content prose prose-lg max-w-none">
+            <%- content %>
+          </div>
+
+          <!-- Tombol kembali -->
+          <div class="mt-10 pt-6 border-t border-gray-100">
+            <a href="/blog"
+               class="inline-flex items-center text-sm font-semibold text-primary hover:text-primarydark transition">
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+              </svg>
+              Kembali ke Blog
+            </a>
+          </div>
+        </article>
+
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="lg:col-span-1 space-y-6">
+
+          <!-- ---------- SEARCH ---------- -->
+          <!-- ---------- SEARCH ---------- -->
+          <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm" data-reveal>
+            <h3 class="text-xs font-bold text-ink uppercase tracking-wider mb-3">Cari Blog Lain...</h3>
+
+            <div class="relative w-full rounded-full shadow-md border border-gray-200 bg-white overflow-hidden">
+              <form action="/blog" method="GET" class="w-full h-[56px] p-1.5 flex items-center gap-1">
+
+                <input type="text" name="q" id="sidebarSearchInput" autocomplete="off"
+                      placeholder="Cari judul, kreator, kategori..."
+                      class="flex-1 h-full bg-transparent border-none outline-none focus:ring-0
+                              text-gray-700 placeholder-gray-400 text-sm px-4">
+
+                <button type="submit"
+                        class="shrink-0 bg-gray-100 hover:bg-gray-200 transition-all duration-200
+                              rounded-full w-11 h-11 flex items-center justify-center text-gray-700
+                              shadow-md hover:shadow-lg hover:-translate-y-0.5
+                              focus:outline-none focus:ring-2 focus:ring-primary/40">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </button>
+
+              </form>
+            </div>
+          </div>
+          <!-- ---------- RECENT POSTS ---------- -->
+          <% if (_recentPosts.length) { %>
+          <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm" data-reveal>
+            <h3 class="text-xs font-bold text-ink uppercase tracking-wider mb-4">Postingan Terbaru</h3>
+            <ul class="space-y-3">
+              <% _recentPosts.forEach(function(rp) { %>
+                <li class="flex gap-3 group">
+                  <a href="<%= rp.link %>" class="shrink-0 w-14 h-14 rounded-lg overflow-hidden bg-softer">
+                    <% if (rp.cover_url) { %>
+                      <img src="<%= rp.cover_url %>" alt="<%= rp.judul %>" loading="lazy"
+                           class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    <% } %>
+                  </a>
+                  <div class="min-w-0 flex-1">
+                    <a href="<%= rp.link %>"
+                       class="text-sm font-semibold text-ink hover:text-primary transition line-clamp-2 leading-snug">
+                      <%= rp.judul %>
+                    </a>
+                    <p class="mt-1 text-[11px] text-body"><%= _fmtShort(rp.tanggal) %></p>
+                  </div>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+          <% } %>
+
+          <!-- ---------- KATEGORI ---------- -->
+          <% if (_categories.length) { %>
+          <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm" data-reveal>
+            <h3 class="text-xs font-bold text-ink uppercase tracking-wider mb-4">Kategori</h3>
+            <ul class="space-y-1">
+              <% _categories.forEach(function(cat) { %>
+                <li>
+                  <a href="/blog?kategori=<%= encodeURIComponent(cat.kategori) %>"
+                     class="flex items-center justify-between text-sm text-body hover:text-primary transition py-1.5 group">
+                    <span class="flex items-center gap-2">
+                      <span class="w-1.5 h-1.5 rounded-full bg-primary/60 group-hover:bg-primary transition"></span>
+                      <%= cat.kategori %>
+                    </span>
+                    <svg class="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </a>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+          <% } %>
+          <% if (_months.length) { %>
+            <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm" data-reveal>
+            <h3 class="text-xs font-bold text-ink uppercase tracking-wider mb-4">Arsip</h3>
+            <ul class="space-y-1">
+                <% _months.forEach(function(m) { %>
+                <li>
+                    <a href="/blog?bulan=<%= encodeURIComponent(m.value) %>"
+                    class="flex items-center justify-between text-sm text-body hover:text-primary transition py-1.5 group">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5 text-primary/60 group-hover:text-primary transition"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <%= m.label %>
+                    </span>
+                    <svg class="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    </a>
+                </li>
+                <% }); %>
+            </ul>
+            </div>
+           <% } %>
+
+        </aside>
+      </div>
+    </div>
+  </div>
 </main>
 
 <%- include('partials/mainFooter'); %>

@@ -4,6 +4,16 @@
 
 <%
   const isSearchMode = typeof query !== 'undefined' && query.q && String(query.q).trim() !== '';
+  
+  const slugifyKategori = (val) =>
+    String(val ?? '').toLowerCase().trim().replace(/\s+/g, '-');
+
+  const buildKategoriHref = (slug) => {
+    const clean = String(slug || '').trim();
+    return clean
+      ? `/product?kategori=${encodeURIComponent(clean)}`
+      : '/product';
+  };
 %>
 
 <main>
@@ -54,7 +64,7 @@
                   <% categories.forEach(cat => { %>
                     <option value="<%= cat.kategori %>"
                       <%= (typeof query !== 'undefined' && String(query.kategori) === String(cat.kategori)) ? 'selected' : '' %>>
-                      <%= cat.kategori %>
+                      <%= cat.kategori === 'uncategorized' ? 'Uncategorized' : cat.kategori.replace(/-/g, ' ') %>
                     </option>
                   <% }) %>
                 <% } %>
@@ -154,8 +164,8 @@
               </span>
 
               <div class="mt-1 text-[10px] lg:text-xs text-body">
-                <a href="/products?kategori=<%= (p.kategori || 'uncategorized').toLowerCase() %>"
-                   class="hover:text-primary transition">
+                <a href="<%= buildKategoriHref(slugifyKategori(p.kategori) || 'uncategorized') %>"
+                  class="hover:text-primary transition">
                   <%= p.kategori ? p.kategori : "Uncategorized" %>
                 </a>
               </div>
@@ -183,8 +193,8 @@
             <% } %>
           </p>
           <% if (isSearchMode || query.kategori) { %>
-            <a href="/products"
-               class="mt-6 inline-block rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primarydark transition">
+            <a href="/product"
+              class="mt-6 inline-block rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primarydark transition">
               Reset Filter
             </a>
           <% } %>

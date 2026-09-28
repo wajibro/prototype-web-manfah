@@ -13,10 +13,14 @@ const makeSlug = (judul: string): string => slugify(judul);
 // ================================================================
 // GET /blog
 // ================================================================
+// ================================================================
+// GET /blog
+// ================================================================
 export const blogPage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const kategori = req.query.kategori as string | undefined;
         const tanggal  = req.query.tanggal  as string | undefined;
+        const bulan    = (req.query.bulan as string | undefined)?.trim(); // format: YYYY-MM
         const kreator  = req.query.kreator  as string | undefined;
         const q        = (req.query.q as string | undefined)?.trim();
 
@@ -43,7 +47,7 @@ export const blogPage = async (req: Request, res: Response, next: NextFunction):
             order1State: false,
         };
 
-        // 3. Filter tunggal
+        // 3. Filter tunggal (bulan TIDAK di sini — difilter di JS setelah fetch)
         if (kategori) {
             postOptions.containsCol = "kategori";
             postOptions.containsRow = [kategori];
@@ -93,15 +97,27 @@ export const blogPage = async (req: Request, res: Response, next: NextFunction):
             }
         }
 
-        // 5. Fetch + mapping link
-        const rawPosts = (await selectTable("posts", postOptions)) as Post[];
+        // 5. Fetch
+        let rawPosts = (await selectTable("posts", postOptions)) as Post[];
 
+        // 6. Filter bulan (YYYY-MM) — difilter di JS
+        if (bulan && /^\d{4}-\d{2}$/.test(bulan)) {
+            rawPosts = (rawPosts || []).filter((p) => {
+                if (!p.tanggal) return false;
+                const d = new Date(p.tanggal);
+                if (isNaN(d.getTime())) return false;
+                const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                return key === bulan;
+            });
+        }
+
+        // 7. Mapping link
         const posts = (rawPosts || []).map(p => ({
             ...p,
             link: `/blog/${makeSlug(p.judul)}`,
         }));
 
-        // 6. Render
+        // 8. Render
         res.render('blogs', {
             posts,
             categories,
@@ -136,6 +152,53 @@ export const getBlogDetail = async (req: Request, res: Response, next: NextFunct
             return;
         }
 
+        // ================================================
+        // Data sidebar
+        // ================================================
+        const categories = (await selectTable(
+            "view_daftar_kategori_posts"
+        )) as Category[];
+
+        // --- Postingan terbaru ---
+        const recentRaw = (await selectTable("view_posts_terbaru", { limit: 6 })) as any[];
+
+        const recentPosts = (recentRaw || [])
+            .map((p: any) => ({
+                id:        p.id_post ?? p.id,
+                judul:     p.judul,
+                cover_url: p.cover_url,
+                tanggal:   p.tanggal,
+                link:      `/blog/${slugify(p.judul)}`,
+            }))
+            .filter((p: any) => p.judul && slugify(p.judul) !== slug)
+            .slice(0, 5);
+
+        // --- Arsip per BULAN (dihitung dari posts) ---
+        const monthLabels = [
+            'Januari','Februari','Maret','April','Mei','Juni',
+            'Juli','Agustus','September','Oktober','November','Desember'
+        ];
+
+        const monthSet = new Set<string>();
+
+        (posts || []).forEach((p) => {
+            if (!p.tanggal) return;
+            const d = new Date(p.tanggal);
+            if (isNaN(d.getTime())) return;
+            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+            monthSet.add(key);
+        });
+
+        const months = Array.from(monthSet)
+            .sort((a, b) => b.localeCompare(a)) // terbaru di atas
+            .map((m) => {
+                const [y, mo] = m.split('-').map(Number);
+                return {
+                    value: m,                                 // "2024-05"
+                    label: `${monthLabels[mo - 1]} ${y}`,    // "Mei 2024"
+                };
+            });
+
         let htmlContent = '';
         try {
             const mdRes = await fetch(post.content_url);
@@ -155,6 +218,11 @@ export const getBlogDetail = async (req: Request, res: Response, next: NextFunct
             date:      post.tanggal,
             kategori:  post.kategori || [],
             cover_url: post.cover_url,
+
+            // === sidebar ===
+            recentPosts,
+            categories,
+            months,
         });
     } catch (error) {
         next(error);

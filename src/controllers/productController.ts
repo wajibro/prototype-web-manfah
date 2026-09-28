@@ -1,3 +1,6 @@
+// ================================================================
+// src/controllers/productController.ts
+// ================================================================
 import type { Request, Response, NextFunction } from 'express';
 import supabase from '../../config/supabase.js';
 import { selectTable } from '../services/supabaseService';
@@ -9,11 +12,12 @@ const sanitizeWord = (w: string): string =>
 
 const makeSlug = (nama: string): string => slugify(nama);
 
+const UNCATEGORIZED_KEY = 'uncategorized';
+
+const getKategori = (p: any): string => String(p?.kategori ?? '').trim();
+
 // ================================================================
 // GET /products
-// Filter: kategori
-// Sort:   harga_asc | harga_desc (default: terbaru)
-// Search: q (nama / kategori)
 // ================================================================
 export const productPage = async (
   req: Request,
@@ -21,35 +25,53 @@ export const productPage = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const kategori = (req.query.kategori as string | undefined)?.trim();
+    const kategoriRaw = (req.query.kategori as string | undefined)?.trim();
     const sort = (req.query.sort as string | undefined)?.trim();
     const q = (req.query.q as string | undefined)?.trim();
 
-    // 1. Ambil semua produk
-    const allProducts = await selectTable('products');
+    // Normalisasi input kategori → slug
+    // "Micro Controller" | "micro%20controller" | "Micro+Controller"
+    // semuanya jadi "micro-controller"
+    const kategoriSlug = kategoriRaw ? slugify(kategoriRaw) : '';
 
-    // 2. Susun daftar unik kategori untuk dropdown
-    const kategoriSet = new Set<string>();
+    // 1. Ambil semua produk
+    const allProducts = await selectTable('products', { order1: 'id_product', order1State: false });
+
+    // 2. Susun kategori unik (dalam bentuk slug) + deteksi uncategorized
+    const kategoriSlugSet = new Set<string>();
+    let hasUncategorized = false;
+
     (allProducts || []).forEach((p: any) => {
-      const k = (p.kategori || '').toString().trim();
-      if (k) kategoriSet.add(k);
+      const k = getKategori(p);
+      if (k) {
+        kategoriSlugSet.add(slugify(k));
+      } else {
+        hasUncategorized = true;
+      }
     });
 
-    const categories = Array.from(kategoriSet)
+    const categories = Array.from(kategoriSlugSet)
       .sort((a, b) => a.localeCompare(b))
-      .map((k) => ({ kategori: k }));
+      .map((slug) => ({ kategori: slug }));
 
-    // 3. Filter kategori
-    let products = allProducts || [];
-
-    if (kategori) {
-      products = products.filter(
-        (p: any) =>
-          String(p.kategori || '').toLowerCase() === kategori.toLowerCase()
-      );
+    if (hasUncategorized) {
+      categories.push({ kategori: UNCATEGORIZED_KEY });
     }
 
-    // 4. Search multi-field (nama + kategori)
+    // 3. Filter kategori (bandingkan dalam bentuk slug)
+    let products = allProducts || [];
+
+    if (kategoriSlug) {
+      if (kategoriSlug === UNCATEGORIZED_KEY) {
+        products = products.filter((p: any) => getKategori(p) === '');
+      } else {
+        products = products.filter(
+          (p: any) => slugify(getKategori(p)) === kategoriSlug
+        );
+      }
+    }
+
+    // 4. Search
     if (q) {
       const words = q
         .split(/\s+/)
@@ -58,7 +80,7 @@ export const productPage = async (
 
       if (words.length > 0) {
         products = products.filter((p: any) => {
-          const haystack = `${p.nama || ''} ${p.kategori || ''}`.toLowerCase();
+          const haystack = `${p.nama || ''} ${getKategori(p)}`.toLowerCase();
           return words.every((w) => haystack.includes(w.toLowerCase()));
         });
       }
@@ -81,11 +103,14 @@ export const productPage = async (
       link: `/products/${makeSlug(p.nama)}`,
     }));
 
-    // 7. Render
+    // 7. Render — kirim kategoriSlug (sudah ternormalisasi) ke view
     res.render('products', {
       products: finalProducts,
       categories,
-      query: req.query,
+      query: {
+        ...req.query,
+        kategori: kategoriSlug || undefined,
+      },
     });
   } catch (error) {
     next(error);

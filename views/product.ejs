@@ -46,8 +46,8 @@
           <!-- Kategori & Brand -->
           <div class="flex flex-wrap items-center gap-2 text-xs">
             <% if (product.kategori) { %>
-              <a href="/products?kategori=<%= product.kategori.toLowerCase() %>"
-                 class="inline-block bg-primary/10 text-primary font-semibold px-3 py-1 rounded-full hover:bg-primary/20 transition">
+              <a href="/product?kategori=<%= encodeURIComponent(String(product.kategori || '').toLowerCase().trim().replace(/\s+/g, '-')) %>"
+                class="inline-block bg-primary/10 text-primary font-semibold px-3 py-1 rounded-full hover:bg-primary/20 transition">
                 <%= product.kategori %>
               </a>
             <% } %>

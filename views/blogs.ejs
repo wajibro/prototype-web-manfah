@@ -4,6 +4,53 @@
 
 <%
   const isSearchMode = typeof query !== 'undefined' && query.q && String(query.q).trim() !== '';
+
+  // ---------- Helper: format date for input[type=date] ----------
+  const formatDateForInput = (val) => {
+    if (!val) return '';
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return String(val).slice(0, 10);
+    return d.toISOString().split('T')[0];
+  };
+
+  // ---------- Helper: build query string preserving existing params ----------
+  const buildQueryString = (overrides = {}) => {
+    const params = new URLSearchParams();
+    const currentQuery = (typeof query !== 'undefined' && query) ? query : {};
+    for (const key in currentQuery) {
+      if (!Object.prototype.hasOwnProperty.call(currentQuery, key)) continue;
+      if (overrides.hasOwnProperty(key)) continue;
+      const val = currentQuery[key];
+      if (val !== undefined && val !== null && val !== '') {
+        params.set(key, val);
+      }
+    }
+    for (const key in overrides) {
+      if (overrides[key] !== undefined && overrides[key] !== null && overrides[key] !== '') {
+        params.set(key, overrides[key]);
+      }
+    }
+    return params.toString();
+  };
+
+  // ---------- Derive available months from dates ----------
+  const monthLabels = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const monthSet = new Set();
+  (typeof dates !== 'undefined' && dates ? dates : []).forEach(d => {
+    const val = d.value || d.tanggal || d;
+    if (val && typeof val === 'string') {
+      const dt = new Date(val);
+      if (!isNaN(dt.getTime())) {
+        const key = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}`;
+        monthSet.add(key);
+      }
+    }
+  });
+  const availableMonths = Array.from(monthSet).sort().reverse();
+  const formatMonthLabel = (m) => {
+    const [y, mo] = m.split('-').map(Number);
+    return `${monthLabels[mo - 1]} ${y}`;
+  };
 %>
 
 <main>
@@ -27,129 +74,143 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
 
       <!-- ================= FILTER / SEARCH SECTION (ANIMATED) ================= -->
-      <div class="mb-12 flex justify-center" data-reveal data-reveal-delay="200">
+      <div class="mb-12" data-reveal data-reveal-delay="200">
 
-        <div id="filterBar" class="relative w-full max-w-4xl min-h-[68px] rounded-full shadow-lg border border-gray-200 bg-white">
+        <div class="flex justify-center">
+          <div id="filterBar" class="relative w-full max-w-5xl min-h-[68px] rounded-full shadow-lg border border-gray-200 bg-white">
 
-          <!-- ============ VIEW 1: FILTERS ============ -->
-          <form id="filtersView" action="" method="GET"
-            class="w-full h-full p-1.5 flex flex-col md:flex-row items-center gap-2 md:gap-0 transition-all duration-300 ease-out
-                   <%= isSearchMode ? 'opacity-0 -translate-y-3 pointer-events-none' : '' %>">
+            <!-- ============ VIEW 1: FILTERS ============ -->
+            <form id="filtersView" action="" method="GET"
+              class="w-full h-full p-1.5 flex flex-col md:flex-row items-center gap-2 md:gap-0 transition-all duration-300 ease-out
+                     <%= isSearchMode ? 'opacity-0 -translate-y-3 pointer-events-none' : '' %>">
 
-            <!-- Bawa keyword search saat ganti dropdown -->
-            <% if (typeof query !== 'undefined' && query.q) { %>
-              <input type="hidden" name="q" value="<%= query.q %>">
-            <% } %>
+              <!-- Bawa keyword search saat ganti dropdown -->
+              <% if (typeof query !== 'undefined' && query.q) { %>
+                <input type="hidden" name="q" value="<%= query.q %>">
+              <% } %>
 
-            <!-- Filter Kategori -->
-            <div class="flex-1 w-full px-4 flex flex-col justify-center">
-              <label for="kategori" class="text-[10px] font-bold text-gray-800 uppercase tracking-wider">Kategori</label>
-              <select name="kategori" id="kategori"
-                onchange="this.form.submit()"
-                class="text-sm text-gray-600 bg-transparent border-none outline-none focus:ring-0 cursor-pointer w-full py-0.5"
-              >
-                <option value="">Filter</option>
-                <% if (typeof categories !== 'undefined' && categories && categories.length) { %>
-                  <% categories.forEach(cat => { %>
-                    <option value="<%= cat.kategori %>"
-                      <%= (typeof query !== 'undefined' && String(query.kategori) === String(cat.kategori)) ? 'selected' : '' %>>
-                      <%= cat.kategori %>
-                    </option>
-                  <% }) %>
-                <% } %>
-              </select>
-            </div>
+              <!-- Filter Kategori -->
+              <div class="flex-1 w-full px-4 flex flex-col justify-center">
+                <label for="kategori" class="text-[10px] font-bold text-gray-800 uppercase tracking-wider">Kategori</label>
+                <select name="kategori" id="kategori"
+                  onchange="this.form.submit()"
+                  class="text-sm text-gray-600 bg-transparent border-none outline-none focus:ring-0 cursor-pointer w-full py-0.5"
+                >
+                  <option value="">Filter</option>
+                  <% if (typeof categories !== 'undefined' && categories && categories.length) { %>
+                    <% categories.forEach(cat => { %>
+                      <option value="<%= cat.kategori %>"
+                        <%= (typeof query !== 'undefined' && String(query.kategori) === String(cat.kategori)) ? 'selected' : '' %>>
+                        <%= cat.kategori %>
+                      </option>
+                    <% }) %>
+                  <% } %>
+                </select>
+              </div>
 
-            <!-- Divider -->
-            <div class="hidden md:block w-px h-10 bg-gray-300 mx-2"></div>
+              <!-- Divider -->
+              <div class="hidden md:block w-px h-10 bg-gray-300 mx-2"></div>
 
-            <!-- Filter Tanggal -->
-            <div class="flex-1 w-full px-4 flex flex-col justify-center">
-              <label for="tanggal" class="text-[10px] font-bold text-gray-800 uppercase tracking-wider">Tanggal</label>
-              <select name="tanggal" id="tanggal"
-                onchange="this.form.submit()"
-                class="text-sm text-gray-600 bg-transparent border-none outline-none focus:ring-0 cursor-pointer w-full py-0.5"
-              >
-                <option value="">Filter</option>
-                <% if (typeof dates !== 'undefined' && dates && dates.length) { %>
-                  <% dates.forEach(date => { %>
-                    <option value="<%= date.value || date.tanggal || date %>"
-                      <%= (typeof query !== 'undefined' && String(query.tanggal) === String(date.value || date.tanggal || date)) ? 'selected' : '' %>>
-                      <%= date.label || date.tanggal || date %>
-                    </option>
-                  <% }) %>
-                <% } %>
-              </select>
-            </div>
+              <!-- Filter Tanggal & Bulan -->
+              <div class="flex-1 w-full px-4 flex flex-col justify-center">
+                <label class="text-[10px] font-bold text-gray-800 uppercase tracking-wider">Tanggal &amp; Bulan</label>
+                <div class="flex items-center gap-2">
+                  <input type="date" name="tanggal" id="tanggal" list="availableDates"
+                    value="<%= (typeof query !== 'undefined' && query.tanggal) ? formatDateForInput(query.tanggal) : '' %>"
+                    onchange="document.getElementById('bulan').value=''; this.form.submit()"
+                    class="text-sm text-gray-600 bg-transparent border-none outline-none focus:ring-0 cursor-pointer w-full py-0.5">
+                  <select name="bulan" id="bulan"
+                    onchange="document.getElementById('tanggal').value=''; this.form.submit()"
+                    class="text-sm text-gray-600 bg-transparent border-none outline-none focus:ring-0 cursor-pointer w-full py-0.5">
+                    <option value="">Bulan</option>
+                    <% availableMonths.forEach(m => { %>
+                      <option value="<%= m %>" <%= (typeof query !== 'undefined' && String(query.bulan) === m) ? 'selected' : '' %>>
+                        <%= formatMonthLabel(m) %>
+                      </option>
+                    <% }) %>
+                  </select>
+                </div>
+                <datalist id="availableDates">
+                  <% (typeof dates !== 'undefined' ? dates : []).forEach(date => { %>
+                    <% const val = formatDateForInput(date.value || date.tanggal || date); %>
+                    <option value="<%= val %>"><%= date.label || date.tanggal || date %></option>
+                  <% }); %>
+                </datalist>
+              </div>
 
-            <!-- Divider -->
-            <div class="hidden md:block w-px h-10 bg-gray-300 mx-2"></div>
+              <!-- Divider -->
+              <div class="hidden md:block w-px h-10 bg-gray-300 mx-2"></div>
 
-            <!-- Filter Kreator -->
-            <div class="flex-1 w-full px-4 flex flex-col justify-center">
-              <label for="kreator" class="text-[10px] font-bold text-gray-800 uppercase tracking-wider">Kreator</label>
-              <select name="kreator" id="kreator"
-                onchange="this.form.submit()"
-                class="text-sm text-gray-600 bg-transparent border-none outline-none focus:ring-0 cursor-pointer w-full py-0.5"
-              >
-                <option value="">Filter</option>
-                <% if (typeof creators !== 'undefined' && creators && creators.length) { %>
-                  <% creators.forEach(creator => { %>
-                    <option value="<%= creator.id_creator %>"
-                      <%= (typeof query !== 'undefined' && String(query.kreator) === String(creator.id_creator)) ? 'selected' : '' %>>
-                      <%= creator.nama %>
-                    </option>
-                  <% }) %>
-                <% } %>
-              </select>
-            </div>
+              <!-- Filter Kreator -->
+              <div class="flex-1 w-full px-4 flex flex-col justify-center">
+                <label for="kreator" class="text-[10px] font-bold text-gray-800 uppercase tracking-wider">Kreator</label>
+                <select name="kreator" id="kreator"
+                  onchange="this.form.submit()"
+                  class="text-sm text-gray-600 bg-transparent border-none outline-none focus:ring-0 cursor-pointer w-full py-0.5"
+                >
+                  <option value="">Filter</option>
+                  <% if (typeof creators !== 'undefined' && creators && creators.length) { %>
+                    <% creators.forEach(creator => { %>
+                      <option value="<%= creator.id_creator %>"
+                        <%= (typeof query !== 'undefined' && String(query.kreator) === String(creator.id_creator)) ? 'selected' : '' %>>
+                        <%= creator.nama %>
+                      </option>
+                    <% }) %>
+                  <% } %>
+                </select>
+              </div>
 
-            <!-- Divider sebelum tombol search -->
-            <div class="hidden md:block w-px h-10 bg-gray-300 mx-2"></div>
+              <!-- Divider sebelum tombol search -->
+              <div class="hidden md:block w-px h-10 bg-gray-300 mx-2"></div>
 
-            <!-- Tombol buka Search -->
-            <div class="pr-2 w-full md:w-auto flex justify-end">
-              <button type="button" id="openSearchBtn"
-                class="bg-gray-100 hover:bg-gray-200 transition-colors rounded-full w-12 h-12 flex items-center justify-center text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <!-- Tombol buka Search -->
+              <div class="pr-2 w-full md:w-auto flex justify-end">
+                <button type="button" id="openSearchBtn"
+                  class="bg-gray-100 hover:bg-gray-200 transition-colors rounded-full w-12 h-12 flex items-center justify-center text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </button>
+              </div>
+            </form>
+
+            <!-- ============ VIEW 2: SEARCH ============ -->
+            <form id="searchView" action="" method="GET"
+              class="absolute inset-0 p-1.5 flex items-center gap-1 transition-all duration-300 ease-out
+                     <%= isSearchMode ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none' %>">
+
+              <!-- Bawa filter aktif saat submit search -->
+              <% if (typeof query !== 'undefined' && query.kategori) { %>
+                <input type="hidden" name="kategori" value="<%= query.kategori %>">
+              <% } %>
+              <% if (typeof query !== 'undefined' && query.tanggal) { %>
+                <input type="hidden" name="tanggal" value="<%= query.tanggal %>">
+              <% } %>
+              <% if (typeof query !== 'undefined' && query.bulan) { %>
+                <input type="hidden" name="bulan" value="<%= query.bulan %>">
+              <% } %>
+              <% if (typeof query !== 'undefined' && query.kreator) { %>
+                <input type="hidden" name="kreator" value="<%= query.kreator %>">
+              <% } %>
+
+              <!-- Tombol kembali -->
+              <button type="button" id="closeSearchBtn"
+                class="shrink-0 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full w-12 h-12 flex items-center justify-center text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
               </button>
-            </div>
-          </form>
 
-          <!-- ============ VIEW 2: SEARCH ============ -->
-          <form id="searchView" action="" method="GET"
-            class="absolute inset-0 p-1.5 flex items-center gap-1 transition-all duration-300 ease-out
-                   <%= isSearchMode ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none' %>">
+              <!-- Input pencarian -->
+              <input type="text" name="q" id="searchInput" autocomplete="off"
+                value="<%= (typeof query !== 'undefined' && query.q) ? query.q : '' %>"
+                placeholder="Cari judul postingan, kreator, kategori..."
+                class="flex-1 h-12 bg-transparent border-none outline-none focus:ring-0 text-gray-700 placeholder-gray-400 text-base px-3">
+            </form>
 
-            <!-- Bawa filter aktif saat submit search -->
-            <% if (typeof query !== 'undefined' && query.kategori) { %>
-              <input type="hidden" name="kategori" value="<%= query.kategori %>">
-            <% } %>
-            <% if (typeof query !== 'undefined' && query.tanggal) { %>
-              <input type="hidden" name="tanggal" value="<%= query.tanggal %>">
-            <% } %>
-            <% if (typeof query !== 'undefined' && query.kreator) { %>
-              <input type="hidden" name="kreator" value="<%= query.kreator %>">
-            <% } %>
-
-            <!-- Tombol kembali -->
-            <button type="button" id="closeSearchBtn"
-              class="shrink-0 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full w-12 h-12 flex items-center justify-center text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-              </svg>
-            </button>
-
-            <!-- Input pencarian -->
-            <input type="text" name="q" id="searchInput" autocomplete="off"
-              value="<%= (typeof query !== 'undefined' && query.q) ? query.q : '' %>"
-              placeholder="Cari judul postingan, kreator, kategori..."
-              class="flex-1 h-12 bg-transparent border-none outline-none focus:ring-0 text-gray-700 placeholder-gray-400 text-base px-3">
-          </form>
-
+          </div>
         </div>
+
       </div>
       <!-- ================= END FILTER / SEARCH SECTION ================= -->
 

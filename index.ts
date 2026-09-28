@@ -7,6 +7,7 @@ import landingRoute from './src/routes/landingRoute';
 import blogRoute from './src/routes/blogRoute';
 import aboutRoute from './src/routes/aboutRoute';
 import productRoute from './src/routes/productRoute';
+import softwareRoute from './src/routes/downloadRoute.js';
 import cartRoute from './src/routes/cartRoute';
 import paymentRoute from './src/routes/paymentRoute';
 import shippingRoute from './src/routes/shippingRoute.js';
@@ -51,7 +52,8 @@ app.use((req, res, next) => {
 app.use('/', landingRoute);
 app.use('/blog', blogRoute);
 app.use('/about', aboutRoute);
-app.use('/products', productRoute);
+app.use('/product', productRoute);
+app.use('/download', softwareRoute);
 app.use('/cart', cartRoute);
 app.use('/api/payments', paymentRoute);
 app.use('/api/shipping', shippingRoute);

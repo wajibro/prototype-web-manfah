@@ -1,7 +1,17 @@
 <%- include('partials/mainHeader', {
   bgImage: "https://dkeswcdfflabksfaxdkk.supabase.co/storage/v1/object/public/bucket/assets/bg-hero.png"
 }) %>
+<%
+  const slugifyKategori = (val) =>
+    String(val ?? '').toLowerCase().trim().replace(/\s+/g, '-');
 
+  const buildKategoriHref = (slug) => {
+    const clean = String(slug || '').trim();
+    return clean
+      ? `/product?kategori=${encodeURIComponent(clean)}`
+      : '/product';
+  };
+%>
 <main>
 
   <!-- ================= HERO ================= -->
@@ -168,8 +178,9 @@
                 <a href="/products/<%= slugify(p.nama) %>" class="hover:text-primary transition"><%= p.nama %></a>
               </h2>
               <span class="mt-1 block font-bold text-primary">Rp <%= Number(p.harga).toLocaleString('id-ID') %></span>
-              <div class="mt-1 text-xs text-body">
-                <a href="https://manfahbot.cc/product-category/<%= (p.kategori || 'uncategorized').toLowerCase() %>/" class="hover:text-primary transition">
+              <div class="mt-1 text-[10px] lg:text-xs text-body">
+                <a href="<%= buildKategoriHref(slugifyKategori(p.kategori) || 'uncategorized') %>"
+                  class="hover:text-primary transition">
                   <%= p.kategori ? p.kategori : "Uncategorized" %>
                 </a>
               </div>
