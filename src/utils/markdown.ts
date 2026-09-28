@@ -20,7 +20,7 @@ marked.setOptions({
     gfm: true,
     breaks: true,
     pedantic: false,
-    smartypants: true,   // ✅ v4 masih support ini
+    smartypants: true,
 });
 
 // ============================================================
@@ -32,7 +32,7 @@ const renderer = new marked.Renderer();
 renderer.heading = (text: string, level: number) => {
     // ⚠️ Signature v4: (text, level, raw, slugger)
     const id = slugifyHeading(text);
-    return `<br><h${level} id="${id}">${text}</h${level}>`;
+    return `<br><h${level} id="${id}" class="font-bold">${text}</h${level}>`;
 };
 
 // ---------- CODE BLOCK dengan highlight + tombol copy ----------
@@ -121,7 +121,7 @@ const wrapToc = (html: string): string => {
                 .replace(/^<ol/, '<ol class="toc-list"');
 
             return `
-                <div class="toc-box" data-reveal>
+                <div class="toc-box mt-0" data-reveal>
                     <h${level} class="toc-title">Table Of Contents</h${level}>
                     ${listWithClass}
                 </div>
