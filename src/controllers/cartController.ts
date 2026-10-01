@@ -97,7 +97,7 @@ export const addToCart = async (
 
     const accept = req.headers.accept || '';
     if (accept.includes('text/html')) {
-      res.redirect(req.get('referer') || '/products');
+      res.redirect(req.get('referer') || '/product');
       return;
     }
 
