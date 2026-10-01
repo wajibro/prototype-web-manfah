@@ -353,15 +353,22 @@ export const checkoutCart = async (
 
     await insertTable('transactions', {
       order_id: orderId,
-      gross_amount: grandTotal,
-      status: 'pending',
+      total_pembayaran: grandTotal,
+      status_pembayaran: 'pending',
+      status_order: 'menunggu konfirmasi dari penjual',
+      resi: '-',
+      customer: {
+        first_name: shipping.recipient_name,
+        email: shipping.email || null,
+        phone: shipping.phone,
+      },
       items,
-      shipping,
-      shipping_cost: shippingCost,
+      data_pengiriman: shipping,
+      ongkir: shippingCost,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-    });
-
+    });    
+    
     const finalItemDetails = [
       ...itemDetails,
       ...(shippingCost > 0

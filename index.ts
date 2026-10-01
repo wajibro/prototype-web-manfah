@@ -11,6 +11,7 @@ import softwareRoute from './src/routes/downloadRoute.js';
 import cartRoute from './src/routes/cartRoute';
 import paymentRoute from './src/routes/paymentRoute';
 import shippingRoute from './src/routes/shippingRoute.js';
+import orderRoute from './src/routes/orderRoute';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -57,6 +58,7 @@ app.use('/download', softwareRoute);
 app.use('/cart', cartRoute);
 app.use('/api/payments', paymentRoute);
 app.use('/api/shipping', shippingRoute);
+app.use('/cek-pesanan', orderRoute);
 
 app.listen(PORT, () => {
   console.log(`Server berjalan di http://localhost:${PORT}`);

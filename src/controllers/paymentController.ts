@@ -109,8 +109,10 @@ export const createSnapPayment = async (
 
     await insertTable('transactions', {
       order_id: orderId,
-      gross_amount: grossAmount,
-      status: 'pending',
+      total_pembayaran: grossAmount,
+      status_pembayaran: 'pending',
+      status_order: 'menunggu konfirmasi dari penjual',
+      resi: '-',
       customer: customer || null,
       items: normalizedItems,
       created_at: new Date().toISOString(),
@@ -122,11 +124,7 @@ export const createSnapPayment = async (
       grossAmount,
       items: itemDetails,
       customer: customer
-        ? {
-            first_name: customer.first_name,
-            email: customer.email,
-            phone: customer.phone,
-          }
+        ? { first_name: customer.first_name, email: customer.email, phone: customer.phone }
         : undefined,
       finishUrl,
     });
@@ -149,6 +147,7 @@ export const createSnapPayment = async (
       token: snap.token,
       redirect_url: snap.redirect_url,
     });
+
   } catch (error) {
     next(error);
   }
@@ -213,8 +212,7 @@ export const midtransNotification = async (
       return;
     }
 
-    // Map status Midtrans -> status internal
-    let newStatus = trx.status;
+    let newStatus = trx.status_pembayaran;
 
     if (transaction_status === 'capture') {
       newStatus = fraud_status === 'accept' ? 'paid' : 'challenge';
@@ -233,13 +231,13 @@ export const midtransNotification = async (
       newStatus = 'refunded';
     }
 
-    const wasPaid = trx.status === 'paid';
+    const wasPaid = trx.status_pembayaran === 'paid';
 
     await updateTable(
       'transactions',
       {
-        status: newStatus,
-        payment_type: payload.payment_type || null,
+        status_pembayaran: newStatus,
+        metode_pembayaran: payload.payment_type || null,
         transaction_id: payload.transaction_id || null,
         fraud_status: fraud_status || null,
         raw_notification: payload,
@@ -248,7 +246,6 @@ export const midtransNotification = async (
       'order_id',
       order_id
     );
-
     // ---------------------------------------------------------
     // Kurangi stok saat pertama kali berubah menjadi `paid`
     // ---------------------------------------------------------
@@ -326,7 +323,21 @@ export const getPaymentStatus = async (
 
     res.json({
       success: true,
-      order: trx,
+      order: {
+        order_id: trx.order_id,
+        status: trx.status_pembayaran,
+        status_order: trx.status_order,
+        gross_amount: trx.total_pembayaran,
+        payment_type: trx.metode_pembayaran,
+        transaction_id: trx.transaction_id,
+        snap_redirect_url: trx.snap_redirect_url,
+        customer: trx.customer,
+        items: trx.items,
+        shipping: trx.data_pengiriman,
+        shipping_cost: trx.ongkir,
+        created_at: trx.created_at,
+        updated_at: trx.updated_at,
+      },
       midtrans: midtransStatus,
     });
   } catch (error) {
